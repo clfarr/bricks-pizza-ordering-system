@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { BUSINESS_INFO } from '../data/businessInfo';
+import logo from '../assets/images/logo.jpg';
 
 function Home() {
   return (
     <div className="home">
       <header className="hero">
+        <img src={logo} alt={BUSINESS_INFO.name} style={{ maxWidth: '320px', margin: '0 auto 2rem', borderRadius: '0.5rem', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }} />
         <h1>{BUSINESS_INFO.name}</h1>
         <p>Authentic brick oven pizza made fresh daily</p>
         <div className="cta-buttons">
