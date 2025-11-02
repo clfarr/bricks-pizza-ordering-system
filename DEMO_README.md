@@ -100,9 +100,9 @@ The checkout process generates a JSON payload matching Square's `CreateOrder` en
 **Phone**: (530) 423-5281
 
 **Hours**:
-- Mon-Thurs: 11AM - 9PM
-- Fri-Sat: 11AM - 11PM
-- Sun: 11AM - 9PM
+- Sun: 11AM - 8PM
+- Mon-Thurs: 11AM - 8PM
+- Fri-Sat: 11AM - 9PM
 
 **Facebook**: https://www.facebook.com/profile.php?id=61579018107619
 

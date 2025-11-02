@@ -86,9 +86,9 @@ src/
 **Phone**: 530-423-5281
 
 **Hours**:
+- Sunday: 11am - 8pm
 - Monday-Thursday: 11am - 8pm
 - Friday & Saturday: 11am - 9pm
-- Sunday: 11am - 9pm
 
 ### Menu Pricing
 

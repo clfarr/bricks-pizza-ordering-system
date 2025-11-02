@@ -8,13 +8,13 @@ export const BUSINESS_INFO = {
   },
   phone: '530-423-5281',
   hours: {
+    'Sunday': { open: '11:00 AM', close: '8:00 PM' },
     'Monday': { open: '11:00 AM', close: '8:00 PM' },
     'Tuesday': { open: '11:00 AM', close: '8:00 PM' },
     'Wednesday': { open: '11:00 AM', close: '8:00 PM' },
     'Thursday': { open: '11:00 AM', close: '8:00 PM' },
     'Friday': { open: '11:00 AM', close: '9:00 PM' },
     'Saturday': { open: '11:00 AM', close: '9:00 PM' },
-    'Sunday': { open: '11:00 AM', close: '9:00 PM' },
   },
 };
 
