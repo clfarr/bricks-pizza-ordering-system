@@ -19,6 +19,29 @@
         }
     </script>
     <style>
+        /* Accessibility - Screen Reader Only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        .focus\:not-sr-only:focus {
+            position: static;
+            width: auto;
+            height: auto;
+            padding: inherit;
+            margin: 0;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
+        }
+
         /* Custom animations and styles */
         .modal-overlay {
             background-color: rgba(0, 0, 0, 0.5);
@@ -191,8 +214,13 @@
 </head>
 <body class="bg-gray-50">
 
+    <!-- Skip Navigation Link -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:bg-brick focus:text-white focus:px-4 focus:py-2">
+        Skip to main content
+    </a>
+
     <!-- Header / Navigation -->
-    <header class="bg-charcoal text-white sticky top-0 z-50 shadow-lg">
+    <header role="banner" class="bg-charcoal text-white sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
@@ -201,22 +229,22 @@
                 </div>
 
                 <!-- Desktop Navigation -->
-                <nav class="hidden md:flex space-x-6">
-                    <a href="#home" class="hover:text-cream transition">Home</a>
-                    <a href="#menu" class="hover:text-cream transition">Order Online</a>
-                    <a href="#orders" class="hover:text-cream transition">My Orders</a>
-                    <a href="#contact" class="hover:text-cream transition">Contact</a>
+                <nav role="navigation" aria-label="Main navigation" class="hidden md:flex space-x-6">
+                    <a href="#home" aria-label="Go to home page" class="hover:text-cream transition">Home</a>
+                    <a href="#menu" aria-label="Go to order online page" class="hover:text-cream transition">Order Online</a>
+                    <a href="#orders" aria-label="View my orders" class="hover:text-cream transition">My Orders</a>
+                    <a href="#contact" aria-label="Go to contact page" class="hover:text-cream transition">Contact</a>
                 </nav>
 
                 <!-- Mobile & Cart Buttons -->
                 <div class="flex items-center gap-3">
-                    <button onclick="toggleCart()" class="relative bg-brick hover:bg-brick/80 px-4 py-2 rounded-lg transition">
+                    <button onclick="toggleCart()" aria-label="Open shopping cart" aria-describedby="cart-badge" class="relative bg-brick hover:bg-brick/80 px-4 py-2 rounded-lg transition">
                         <span>Cart</span>
-                        <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center hidden">0</span>
+                        <span id="cart-badge" aria-live="polite" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center hidden">0</span>
                     </button>
 
                     <!-- Hamburger Menu Button -->
-                    <button onclick="toggleMobileMenu()" class="md:hidden hamburger p-2" id="hamburger-btn">
+                    <button onclick="toggleMobileMenu()" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden hamburger p-2" id="hamburger-btn">
                         <div class="w-6 h-0.5 bg-white mb-1 hamburger-line line1"></div>
                         <div class="w-6 h-0.5 bg-white mb-1 hamburger-line line2"></div>
                         <div class="w-6 h-0.5 bg-white hamburger-line line3"></div>
@@ -227,17 +255,17 @@
     </header>
 
     <!-- Mobile Navigation Menu -->
-    <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-charcoal text-white z-50 shadow-2xl md:hidden">
+    <div id="mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-charcoal text-white z-50 shadow-2xl md:hidden">
         <div class="p-6">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-xl font-bold text-cream">Menu</h2>
-                <button onclick="toggleMobileMenu()" class="text-white text-2xl">&times;</button>
+                <button onclick="toggleMobileMenu()" aria-label="Close mobile menu" class="text-white text-2xl">&times;</button>
             </div>
-            <nav class="space-y-4">
-                <a href="#home" onclick="navigateTo('home'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Home</a>
-                <a href="#menu" onclick="navigateTo('menu'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Order Online</a>
-                <a href="#orders" onclick="navigateTo('orders'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">My Orders</a>
-                <a href="#contact" onclick="navigateTo('contact'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Contact</a>
+            <nav role="navigation" aria-label="Mobile navigation" class="space-y-4">
+                <a href="#home" onclick="navigateTo('home'); toggleMobileMenu();" aria-label="Go to home page" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Home</a>
+                <a href="#menu" onclick="navigateTo('menu'); toggleMobileMenu();" aria-label="Go to order online page" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Order Online</a>
+                <a href="#orders" onclick="navigateTo('orders'); toggleMobileMenu();" aria-label="View my orders" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">My Orders</a>
+                <a href="#contact" onclick="navigateTo('contact'); toggleMobileMenu();" aria-label="Go to contact page" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Contact</a>
             </nav>
             <div class="mt-8 pt-8 border-t border-cream/20">
                 <p class="text-sm text-cream mb-2">Call us:</p>
@@ -247,10 +275,10 @@
     </div>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden" onclick="toggleMobileMenu()"></div>
+    <div id="mobile-menu-overlay" aria-hidden="true" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden" onclick="toggleMobileMenu()"></div>
 
     <!-- Main Content Container -->
-    <main id="app-content">
+    <main id="main-content" role="main" aria-label="Main content">
 
         <!-- HOME PAGE -->
         <section id="home" class="page">
@@ -343,51 +371,51 @@
                 </div>
 
                 <!-- Group Order Info -->
-                <div id="group-order-banner" class="hidden bg-gradient-to-r from-brick to-charcoal text-white rounded-lg shadow-lg p-4 md:p-6 mb-6">
+                <div id="group-order-banner" role="region" aria-label="Group order information" class="hidden bg-gradient-to-r from-brick to-charcoal text-white rounded-lg shadow-lg p-4 md:p-6 mb-6">
                     <div class="flex items-center justify-between mb-4">
                         <div>
                             <h3 class="text-xl font-bold flex items-center gap-2">
                                 👥 Group Order
-                                <span id="group-order-role" class="text-sm bg-white/20 px-3 py-1 rounded-full"></span>
+                                <span id="group-order-role" aria-label="Your role in group order" class="text-sm bg-white/20 px-3 py-1 rounded-full"></span>
                             </h3>
                             <p class="text-sm text-cream mt-1">Share the link below for others to join</p>
                         </div>
-                        <button type="button" onclick="leaveGroupOrder()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-bold transition">
+                        <button type="button" onclick="leaveGroupOrder()" aria-label="Leave group order" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-bold transition">
                             Leave Group
                         </button>
                     </div>
                     <div class="bg-white/10 rounded-lg p-3 mb-4">
                         <div class="flex items-center gap-2">
-                            <input type="text" id="group-order-link" readonly class="flex-1 bg-transparent border-none text-white placeholder-cream/50 text-sm" value="">
-                            <button type="button" onclick="copyGroupLink()" class="bg-white text-brick px-4 py-2 rounded-lg text-sm font-bold hover:bg-cream transition">
+                            <input type="text" id="group-order-link" aria-label="Shareable group order link" readonly class="flex-1 bg-transparent border-none text-white placeholder-cream/50 text-sm" value="">
+                            <button type="button" onclick="copyGroupLink()" aria-label="Copy group order link to clipboard" class="bg-white text-brick px-4 py-2 rounded-lg text-sm font-bold hover:bg-cream transition">
                                 📋 Copy
                             </button>
                         </div>
                     </div>
-                    <div id="group-participants" class="flex flex-wrap gap-2">
+                    <div id="group-participants" aria-live="polite" aria-label="Group order participants" class="flex flex-wrap gap-2">
                         <!-- Participant pills will be rendered here -->
                     </div>
                 </div>
 
                 <!-- Checkout Form -->
-                <form id="checkout-form" class="space-y-6 md:space-y-8">
+                <form id="checkout-form" role="form" aria-label="Order checkout form" class="space-y-6 md:space-y-8">
                     <!-- Step 1: Order Type & Time -->
-                    <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
-                        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 1: Order Details</h3>
+                    <fieldset class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+                        <legend class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 1: Order Details</legend>
 
                         <!-- Order Type -->
-                        <div class="mb-6">
+                        <div class="mb-6" role="radiogroup" aria-label="Order type selection">
                             <label class="block text-sm font-bold mb-3">Order Type *</label>
                             <div class="grid grid-cols-2 gap-4">
                                 <label class="relative cursor-pointer">
-                                    <input type="radio" name="order-type" value="pickup" checked class="peer sr-only" onchange="toggleOrderType()">
+                                    <input type="radio" name="order-type" value="pickup" checked aria-label="Pickup order - available now" class="peer sr-only" onchange="toggleOrderType()">
                                     <div class="border-2 border-gray-300 rounded-lg p-4 text-center peer-checked:border-brick peer-checked:bg-brick/5 transition">
                                         <span class="text-lg font-bold">🏪 Pickup</span>
                                         <p class="text-xs text-gray-600 mt-1">Available Now</p>
                                     </div>
                                 </label>
                                 <label class="relative cursor-not-allowed opacity-50">
-                                    <input type="radio" name="order-type" value="delivery" disabled class="peer sr-only">
+                                    <input type="radio" name="order-type" value="delivery" disabled aria-label="Delivery - coming soon, currently unavailable" class="peer sr-only">
                                     <div class="border-2 border-gray-300 rounded-lg p-4 text-center">
                                         <span class="text-lg font-bold">🚗 Delivery</span>
                                         <p class="text-xs text-gray-600 mt-1">Coming Soon</p>
@@ -397,17 +425,17 @@
                         </div>
 
                         <!-- Order Timing -->
-                        <div>
+                        <div role="radiogroup" aria-label="Order timing selection">
                             <label class="block text-sm font-bold mb-3">When do you want this order?</label>
                             <div class="grid grid-cols-2 gap-4 mb-4">
                                 <label class="relative cursor-pointer">
-                                    <input type="radio" name="order-timing" value="asap" checked class="peer sr-only" onchange="toggleOrderTiming()">
+                                    <input type="radio" name="order-timing" value="asap" checked aria-label="ASAP order - ready in 20-30 minutes" class="peer sr-only" onchange="toggleOrderTiming()">
                                     <div class="border-2 border-gray-300 rounded-lg p-3 text-center peer-checked:border-brick peer-checked:bg-brick/5 transition">
                                         <span class="text-base font-bold">⚡ ASAP</span>
                                     </div>
                                 </label>
                                 <label class="relative cursor-pointer">
-                                    <input type="radio" name="order-timing" value="scheduled" class="peer sr-only" onchange="toggleOrderTiming()">
+                                    <input type="radio" name="order-timing" value="scheduled" aria-label="Schedule order for a future date and time" class="peer sr-only" onchange="toggleOrderTiming()">
                                     <div class="border-2 border-gray-300 rounded-lg p-3 text-center peer-checked:border-brick peer-checked:bg-brick/5 transition">
                                         <span class="text-base font-bold">📅 Schedule</span>
                                     </div>
@@ -416,62 +444,62 @@
 
                             <!-- ASAP Pickup Time -->
                             <div id="asap-time-section">
-                                <label class="block text-sm font-bold mb-2">Pickup Time *</label>
-                                <select id="pickup-time" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                <label for="pickup-time" class="block text-sm font-bold mb-2">Pickup Time *</label>
+                                <select id="pickup-time" required aria-required="true" aria-describedby="asap-help-text" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                                     <option value="">Select a time...</option>
                                 </select>
-                                <p class="text-xs text-gray-500 mt-1">Orders typically ready in 20-30 minutes</p>
+                                <p id="asap-help-text" class="text-xs text-gray-500 mt-1">Orders typically ready in 20-30 minutes</p>
                             </div>
 
                             <!-- Scheduled Order -->
                             <div id="scheduled-time-section" class="hidden">
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label class="block text-sm font-bold mb-2">Date *</label>
-                                        <input type="date" id="scheduled-date" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                        <label for="scheduled-date" class="block text-sm font-bold mb-2">Date *</label>
+                                        <input type="date" id="scheduled-date" aria-required="true" aria-describedby="scheduled-help-text" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-bold mb-2">Time *</label>
-                                        <input type="time" id="scheduled-time" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                        <label for="scheduled-time" class="block text-sm font-bold mb-2">Time *</label>
+                                        <input type="time" id="scheduled-time" aria-required="true" aria-describedby="scheduled-help-text" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                                     </div>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">Schedule your order up to 7 days in advance</p>
+                                <p id="scheduled-help-text" class="text-xs text-gray-500 mt-1">Schedule your order up to 7 days in advance</p>
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     <!-- Step 2: Contact Info -->
-                    <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
-                        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 2: Contact Information</h3>
+                    <fieldset class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+                        <legend class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 2: Contact Information</legend>
                         <div class="grid md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-bold mb-2">Name *</label>
-                                <input type="text" id="customer-name" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                <label for="customer-name" class="block text-sm font-bold mb-2">Name *</label>
+                                <input type="text" id="customer-name" required aria-required="true" aria-label="Your full name" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                             </div>
                             <div>
-                                <label class="block text-sm font-bold mb-2">Phone *</label>
-                                <input type="tel" id="customer-phone" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                <label for="customer-phone" class="block text-sm font-bold mb-2">Phone *</label>
+                                <input type="tel" id="customer-phone" required aria-required="true" aria-label="Your phone number" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-bold mb-2">Email *</label>
-                                <input type="email" id="customer-email" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                <label for="customer-email" class="block text-sm font-bold mb-2">Email *</label>
+                                <input type="email" id="customer-email" required aria-required="true" aria-label="Your email address" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-bold mb-2">Special Instructions (Optional)</label>
-                                <textarea id="special-instructions" rows="3" placeholder="Extra sauce, no olives, well done, etc..." class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base resize-none"></textarea>
-                                <p class="text-xs text-gray-500 mt-1">Let us know any special requests for your order</p>
+                                <label for="special-instructions" class="block text-sm font-bold mb-2">Special Instructions (Optional)</label>
+                                <textarea id="special-instructions" rows="3" placeholder="Extra sauce, no olives, well done, etc..." aria-label="Special instructions for your order" aria-describedby="special-instructions-help" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base resize-none"></textarea>
+                                <p id="special-instructions-help" class="text-xs text-gray-500 mt-1">Let us know any special requests for your order</p>
                             </div>
                             <div class="md:col-span-2">
                                 <label class="flex items-start space-x-3 cursor-pointer">
-                                    <input type="checkbox" id="sms-notifications" class="mt-1 w-4 h-4 text-brick border-gray-300 rounded focus:ring-2 focus:ring-brick">
-                                    <span class="text-sm">
+                                    <input type="checkbox" id="sms-notifications" aria-label="Receive SMS notifications when order is ready" aria-describedby="sms-help-text" class="mt-1 w-4 h-4 text-brick border-gray-300 rounded focus:ring-2 focus:ring-brick">
+                                    <span class="text-sm" id="sms-help-text">
                                         <span class="font-bold">Send me SMS updates</span>
                                         <span class="block text-gray-600">Get a text when your order is ready for pickup</span>
                                     </span>
                                 </label>
                             </div>
                         </div>
-                    </div>
+                    </fieldset>
 
                     <!-- Step 3: Payment Info (Mock) -->
                     <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
@@ -593,44 +621,44 @@
     <!-- MODALS -->
 
     <!-- Cart Modal -->
-    <div id="cart-modal" class="hidden fixed inset-0 z-50 modal-overlay">
-        <div class="flex items-center justify-center min-h-screen p-4">
+    <div id="cart-modal" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title" aria-hidden="true" class="hidden fixed inset-0 z-50 modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4" onclick="if(event.target === this) toggleCart()">
             <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-2xl font-bold text-charcoal">Your Cart</h3>
-                        <button onclick="toggleCart()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                        <h3 id="cart-modal-title" class="text-2xl font-bold text-charcoal">Your Cart</h3>
+                        <button onclick="toggleCart()" aria-label="Close cart modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
                     </div>
 
-                    <div id="cart-items" class="space-y-4 mb-6">
+                    <div id="cart-items" role="list" aria-label="Cart items" aria-live="polite" class="space-y-4 mb-6">
                         <!-- Cart items will be rendered here -->
                     </div>
 
-                    <div class="border-t pt-4 space-y-2 mb-6">
+                    <div class="border-t pt-4 space-y-2 mb-6" role="region" aria-label="Order totals">
                         <div class="flex justify-between text-lg">
                             <span>Subtotal:</span>
-                            <span id="cart-subtotal">$0.00</span>
+                            <span id="cart-subtotal" aria-label="Cart subtotal">$0.00</span>
                         </div>
                         <div class="flex justify-between text-lg">
                             <span>Tax (7.25%):</span>
-                            <span id="cart-tax">$0.00</span>
+                            <span id="cart-tax" aria-label="Tax amount">$0.00</span>
                         </div>
                         <div class="flex justify-between text-2xl font-bold text-brick">
                             <span>Total:</span>
-                            <span id="cart-total">$0.00</span>
+                            <span id="cart-total" aria-label="Order total">$0.00</span>
                         </div>
                     </div>
 
                     <div class="flex flex-col gap-3">
                         <div class="flex gap-4">
-                            <button onclick="toggleCart()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 rounded-lg transition">
+                            <button onclick="toggleCart()" aria-label="Continue shopping and close cart" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 rounded-lg transition">
                                 Continue Shopping
                             </button>
-                            <button onclick="proceedToCheckout()" class="flex-1 bg-brick hover:bg-brick/80 text-white font-bold py-3 rounded-lg transition glow">
+                            <button onclick="proceedToCheckout()" aria-label="Proceed to checkout" class="flex-1 bg-brick hover:bg-brick/80 text-white font-bold py-3 rounded-lg transition glow">
                                 Checkout
                             </button>
                         </div>
-                        <button onclick="startGroupOrder()" class="w-full bg-gradient-to-r from-brick to-charcoal text-white font-bold py-3 rounded-lg transition hover:opacity-90">
+                        <button onclick="startGroupOrder()" aria-label="Start a group order for multiple people" class="w-full bg-gradient-to-r from-brick to-charcoal text-white font-bold py-3 rounded-lg transition hover:opacity-90">
                             👥 Start Group Order
                         </button>
                     </div>
@@ -640,13 +668,13 @@
     </div>
 
     <!-- Item Customization Modal -->
-    <div id="item-modal" class="hidden fixed inset-0 z-50 modal-overlay">
-        <div class="flex items-center justify-center min-h-screen p-4">
+    <div id="item-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true" class="hidden fixed inset-0 z-50 modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4" onclick="if(event.target === this) closeItemModal()">
             <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in">
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h3 id="modal-title" class="text-2xl font-bold text-charcoal">Customize Item</h3>
-                        <button onclick="closeItemModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                        <button onclick="closeItemModal()" aria-label="Close customization modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
                     </div>
 
                     <div id="modal-body">
@@ -658,19 +686,19 @@
     </div>
 
     <!-- Order Confirmation Modal -->
-    <div id="confirmation-modal" class="hidden fixed inset-0 z-50 modal-overlay">
+    <div id="confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="confirmation-modal-title" aria-hidden="true" class="hidden fixed inset-0 z-50 modal-overlay">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg shadow-2xl max-w-md w-full slide-in">
                 <div class="p-6 md:p-8 text-center">
-                    <div class="text-5xl md:text-6xl mb-4">✅</div>
-                    <h3 class="text-2xl md:text-3xl font-bold text-brick mb-4">Order Placed!</h3>
+                    <div class="text-5xl md:text-6xl mb-4" role="img" aria-label="Success checkmark">✅</div>
+                    <h3 id="confirmation-modal-title" class="text-2xl md:text-3xl font-bold text-brick mb-4">Order Placed!</h3>
                     <p class="text-gray-600 mb-4 text-sm md:text-base">Thank you for your order. We'll have it ready for pickup soon!</p>
                     <p class="text-sm text-gray-500 mb-6">Check the browser console to see the Square API payload</p>
                     <div class="flex flex-col gap-3">
-                        <button onclick="navigateTo('orders'); closeConfirmation();" class="bg-brick hover:bg-brick/80 text-white font-bold py-3 px-6 rounded-lg transition glow">
+                        <button onclick="navigateTo('orders'); closeConfirmation();" aria-label="Track your order" class="bg-brick hover:bg-brick/80 text-white font-bold py-3 px-6 rounded-lg transition glow">
                             Track My Order
                         </button>
-                        <button onclick="closeConfirmation()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg transition">
+                        <button onclick="closeConfirmation()" aria-label="Close and return to home" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg transition">
                             Back to Home
                         </button>
                     </div>
@@ -918,12 +946,17 @@
             const overlay = document.getElementById('mobile-menu-overlay');
             const hamburger = document.getElementById('hamburger-btn');
 
-            mobileMenu.classList.toggle('open');
+            const isOpen = mobileMenu.classList.toggle('open');
             overlay.classList.toggle('hidden');
             hamburger.classList.toggle('open');
 
+            // Update ARIA attributes
+            hamburger.setAttribute('aria-expanded', isOpen);
+            mobileMenu.setAttribute('aria-hidden', !isOpen);
+            overlay.setAttribute('aria-hidden', !isOpen);
+
             // Prevent body scroll when menu is open
-            if (mobileMenu.classList.contains('open')) {
+            if (isOpen) {
                 document.body.style.overflow = 'hidden';
             } else {
                 document.body.style.overflow = '';
@@ -1756,6 +1789,14 @@
 
             modal.classList.remove('hidden');
             modal.classList.add('fade-in');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+
+            // Focus on the first interactive element
+            setTimeout(() => {
+                const firstSelect = modal.querySelector('select');
+                if (firstSelect) firstSelect.focus();
+            }, 100);
         }
 
         function updateSpecialtyPrice() {
@@ -2102,7 +2143,10 @@
         }
 
         function closeItemModal() {
-            document.getElementById('item-modal').classList.add('hidden');
+            const modal = document.getElementById('item-modal');
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
         }
 
         // ===================================
@@ -2110,10 +2154,19 @@
         // ===================================
         function toggleCart() {
             const modal = document.getElementById('cart-modal');
-            modal.classList.toggle('hidden');
+            const isHidden = modal.classList.toggle('hidden');
+            modal.setAttribute('aria-hidden', isHidden);
 
-            if (!modal.classList.contains('hidden')) {
+            if (!isHidden) {
                 renderCart();
+                document.body.style.overflow = 'hidden';
+                // Focus on close button for accessibility
+                setTimeout(() => {
+                    const closeButton = modal.querySelector('button[aria-label="Close cart modal"]');
+                    if (closeButton) closeButton.focus();
+                }, 100);
+            } else {
+                document.body.style.overflow = '';
             }
         }
 
@@ -2162,10 +2215,12 @@
         }
 
         function removeFromCart(index) {
+            const itemName = cart[index].name;
             log(LOG_LEVEL.INFO, `Removing item from cart at index ${index}`);
             cart.splice(index, 1);
             renderCart();
             updateCartDisplay();
+            announceToScreenReader(`${itemName} removed from cart`);
         }
 
         function updateCartTotals() {
@@ -2185,8 +2240,10 @@
             if (itemCount > 0) {
                 badge.textContent = itemCount;
                 badge.classList.remove('hidden');
+                badge.setAttribute('aria-label', `${itemCount} items in cart`);
             } else {
                 badge.classList.add('hidden');
+                badge.setAttribute('aria-label', 'Cart is empty');
             }
         }
 
@@ -2421,11 +2478,24 @@
         });
 
         function showConfirmation() {
-            document.getElementById('confirmation-modal').classList.remove('hidden');
+            const modal = document.getElementById('confirmation-modal');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            announceToScreenReader('Order placed successfully!', 'assertive');
+
+            // Focus on the first button
+            setTimeout(() => {
+                const firstButton = modal.querySelector('button');
+                if (firstButton) firstButton.focus();
+            }, 100);
         }
 
         function closeConfirmation() {
-            document.getElementById('confirmation-modal').classList.add('hidden');
+            const modal = document.getElementById('confirmation-modal');
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
             navigateTo('home');
         }
 
@@ -2439,6 +2509,21 @@
         function showNotification(message) {
             // Simple notification - could be enhanced
             log(LOG_LEVEL.INFO, `Notification: ${message}`);
+            announceToScreenReader(message);
+        }
+
+        // Screen reader announcements
+        function announceToScreenReader(message, priority = 'polite') {
+            const announcement = document.getElementById('screen-reader-announcements');
+            if (!announcement) return;
+
+            announcement.setAttribute('aria-live', priority);
+            announcement.textContent = message;
+
+            // Clear after announcement
+            setTimeout(() => {
+                announcement.textContent = '';
+            }, 1000);
         }
 
         // ===================================
@@ -2475,6 +2560,32 @@
                 renderOrders();
             }
 
+            // Keyboard accessibility - ESC key to close modals and mobile menu
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' || e.key === 'Esc') {
+                    // Close cart modal
+                    const cartModal = document.getElementById('cart-modal');
+                    if (cartModal && !cartModal.classList.contains('hidden')) {
+                        toggleCart();
+                        return;
+                    }
+
+                    // Close item modal
+                    const itemModal = document.getElementById('item-modal');
+                    if (itemModal && !itemModal.classList.contains('hidden')) {
+                        closeItemModal();
+                        return;
+                    }
+
+                    // Close mobile menu
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenu && mobileMenu.classList.contains('open')) {
+                        toggleMobileMenu();
+                        return;
+                    }
+                }
+            });
+
             // Auto-refresh orders page every 30 seconds if on that page
             setInterval(() => {
                 if (currentPage === 'orders') {
@@ -2483,5 +2594,8 @@
             }, 30000);
         });
     </script>
+
+    <!-- Screen Reader Announcements (Visually Hidden) -->
+    <div id="screen-reader-announcements" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 </body>
 </html>
