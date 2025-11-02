@@ -376,6 +376,20 @@
                                 <label class="block text-sm font-bold mb-2">Email *</label>
                                 <input type="email" id="customer-email" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                             </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-bold mb-2">Special Instructions (Optional)</label>
+                                <textarea id="special-instructions" rows="3" placeholder="Extra sauce, no olives, well done, etc..." class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base resize-none"></textarea>
+                                <p class="text-xs text-gray-500 mt-1">Let us know any special requests for your order</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="flex items-start space-x-3 cursor-pointer">
+                                    <input type="checkbox" id="sms-notifications" class="mt-1 w-4 h-4 text-brick border-gray-300 rounded focus:ring-2 focus:ring-brick">
+                                    <span class="text-sm">
+                                        <span class="font-bold">Send me SMS updates</span>
+                                        <span class="block text-gray-600">Get a text when your order is ready for pickup</span>
+                                    </span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -725,6 +739,7 @@
         let cart = [];
         let currentPage = 'home';
         let orders = JSON.parse(localStorage.getItem('bricksOrders') || '[]');
+        let favoriteOrders = JSON.parse(localStorage.getItem('bricksFavorites') || '[]');
 
         // ===================================
         // LOGGING UTILITIES
@@ -836,6 +851,95 @@
             log(LOG_LEVEL.INFO, 'Order saved to localStorage', orderData);
         }
 
+        function calculateEstimatedReadyTime(items) {
+            // Base time: 15 minutes
+            let minutes = 15;
+
+            // Count item types
+            let pizzaCount = 0;
+            let starterCount = 0;
+
+            items.forEach(item => {
+                const quantity = item.quantity || 1;
+                if (item.type === 'specialty' || item.type === 'byo') {
+                    pizzaCount += quantity;
+                } else if (item.type === 'starter') {
+                    starterCount += quantity;
+                }
+            });
+
+            // Add time based on pizzas (5 min per pizza)
+            minutes += pizzaCount * 5;
+
+            // Add time for starters (2 min per starter)
+            minutes += starterCount * 2;
+
+            // Cap at 45 minutes
+            minutes = Math.min(minutes, 45);
+
+            return minutes;
+        }
+
+        function reorderFromHistory(orderIndex) {
+            const order = orders[orderIndex];
+            if (!order) return;
+
+            // Clear current cart
+            cart = [];
+
+            // Add all items from the order to cart
+            order.items.forEach(item => {
+                cart.push({...item});
+            });
+
+            updateCartDisplay();
+            log(LOG_LEVEL.INFO, 'Reordered from history', order);
+
+            // Navigate to menu and show cart
+            navigateTo('menu');
+            toggleCart();
+        }
+
+        function addToFavorites(orderIndex) {
+            const order = orders[orderIndex];
+            if (!order) return;
+
+            // Check if already favorited
+            const exists = favoriteOrders.find(fav => fav.id === order.id);
+            if (exists) {
+                alert('This order is already in your favorites!');
+                return;
+            }
+
+            favoriteOrders.push({...order});
+            localStorage.setItem('bricksFavorites', JSON.stringify(favoriteOrders));
+            log(LOG_LEVEL.INFO, 'Added to favorites', order);
+
+            // Re-render orders to show updated favorite status
+            renderOrders();
+        }
+
+        function removeFromFavorites(orderId) {
+            favoriteOrders = favoriteOrders.filter(fav => fav.id !== orderId);
+            localStorage.setItem('bricksFavorites', JSON.stringify(favoriteOrders));
+            renderOrders();
+        }
+
+        function isFavorite(orderId) {
+            return favoriteOrders.some(fav => fav.id === orderId);
+        }
+
+        function simulateSMSNotification(phone, orderStatus, orderId) {
+            // Simulate sending SMS
+            console.log("=".repeat(60));
+            console.log("--- SIMULATED SMS NOTIFICATION ---");
+            console.log(`To: ${phone}`);
+            console.log(`Message: 🍕 Bricks Pizza: Your order #${orderId} is ${orderStatus}! Ready for pickup at 520 Main St, Weaverville.`);
+            console.log("=".repeat(60));
+
+            log(LOG_LEVEL.INFO, 'SMS notification sent', { phone, orderStatus, orderId });
+        }
+
         function getOrderStatus(orderTime) {
             const now = Date.now();
             const orderDate = new Date(orderTime).getTime();
@@ -872,14 +976,19 @@
                 const status = getOrderStatus(order.timestamp);
                 const orderDate = new Date(order.timestamp);
                 const pickupDate = new Date(order.pickupTime);
+                const isFav = isFavorite(order.id);
 
                 html += `
                     <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 card-hover">
                         <!-- Order Header -->
                         <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h3 class="text-lg md:text-xl font-bold text-charcoal">Order #${order.id}</h3>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-lg md:text-xl font-bold text-charcoal">Order #${order.id}</h3>
+                                    ${isFav ? '<span class="text-yellow-500 text-xl">⭐</span>' : ''}
+                                </div>
                                 <p class="text-sm text-gray-500">${orderDate.toLocaleString()}</p>
+                                ${order.estimatedMinutes ? `<p class="text-xs text-brick font-bold mt-1">⏱️ Est. ${order.estimatedMinutes} min</p>` : ''}
                             </div>
                             <div class="text-right">
                                 <span class="inline-block px-3 py-1 rounded-full text-sm font-bold bg-${status.color}-100 text-${status.color}-700">
@@ -892,6 +1001,10 @@
                         <div class="border-t border-b py-3 mb-3">
                             <p class="text-sm font-bold text-brick mb-1">Pickup Time:</p>
                             <p class="text-base">${pickupDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</p>
+                            ${order.specialInstructions ? `
+                                <p class="text-sm font-bold text-brick mb-1 mt-2">Special Instructions:</p>
+                                <p class="text-sm text-gray-600 italic">"${order.specialInstructions}"</p>
+                            ` : ''}
                         </div>
 
                         <!-- Order Items -->
@@ -905,7 +1018,7 @@
                         </div>
 
                         <!-- Order Total -->
-                        <div class="border-t pt-3">
+                        <div class="border-t pt-3 mb-3">
                             <div class="flex justify-between items-center">
                                 <span class="font-bold text-lg">Total:</span>
                                 <span class="font-bold text-xl text-brick">$${order.total.toFixed(2)}</span>
@@ -913,7 +1026,7 @@
                         </div>
 
                         <!-- Status Progress Bar -->
-                        <div class="mt-4">
+                        <div class="mb-4">
                             <div class="flex justify-between text-xs mb-2">
                                 <span class="${status.status === 'received' || status.status === 'preparing' || status.status === 'ready' ? 'text-brick font-bold' : 'text-gray-400'}">Received</span>
                                 <span class="${status.status === 'preparing' || status.status === 'ready' ? 'text-brick font-bold' : 'text-gray-400'}">Preparing</span>
@@ -922,6 +1035,21 @@
                             <div class="w-full bg-gray-200 rounded-full h-2">
                                 <div class="bg-brick rounded-full h-2 transition-all duration-500" style="width: ${status.status === 'received' ? '33%' : status.status === 'preparing' ? '66%' : '100%'}"></div>
                             </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button onclick="reorderFromHistory(${index})" class="flex-1 bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition text-sm glow">
+                                🔄 Reorder
+                            </button>
+                            ${isFav ?
+                                `<button onclick="removeFromFavorites('${order.id}')" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm">
+                                    ⭐ Remove Favorite
+                                </button>` :
+                                `<button onclick="addToFavorites(${index})" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg transition text-sm">
+                                    ⭐ Add to Favorites
+                                </button>`
+                            }
                         </div>
                     </div>
                 `;
@@ -1605,6 +1733,8 @@
                 const customerEmail = document.getElementById('customer-email').value;
                 const pickupTime = document.getElementById('pickup-time').value;
                 const orderType = document.querySelector('input[name="order-type"]:checked').value;
+                const specialInstructions = document.getElementById('special-instructions').value.trim();
+                const smsNotifications = document.getElementById('sms-notifications').checked;
 
                 // Validate pickup time
                 if (!pickupTime) {
@@ -1618,6 +1748,9 @@
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const tax = subtotal * 0.0725;
                 const total = subtotal + tax;
+
+                // Calculate estimated ready time
+                const estimatedMinutes = calculateEstimatedReadyTime(cart);
 
                 // Create order ID
                 const orderId = `${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
@@ -1660,6 +1793,9 @@
                     timestamp: Date.now(),
                     pickupTime: pickupTime,
                     orderType: orderType,
+                    estimatedMinutes: estimatedMinutes,
+                    specialInstructions: specialInstructions || null,
+                    smsNotifications: smsNotifications,
                     customer: {
                         name: customerName,
                         phone: customerPhone,
@@ -1685,16 +1821,31 @@
                     console.log(`Customer: ${customerName} (${customerEmail})`);
                     console.log(`Phone: ${customerPhone}`);
                     console.log(`Items: ${cart.length} different items, ${cart.reduce((sum, item) => sum + item.quantity, 0)} total`);
+                    console.log(`Estimated Time: ${estimatedMinutes} minutes`);
+                    if (specialInstructions) console.log(`Special Instructions: ${specialInstructions}`);
+                    if (smsNotifications) console.log(`SMS Notifications: ENABLED`);
                     console.log("=".repeat(60));
 
                     log(LOG_LEVEL.INFO, 'Order submitted successfully', {
                         orderId: orderPayload.order.reference_id,
                         total: total,
-                        itemCount: cart.length
+                        itemCount: cart.length,
+                        estimatedMinutes: estimatedMinutes
                     });
 
                     // Save order to localStorage
                     saveOrder(orderData);
+
+                    // Simulate SMS notification if enabled
+                    if (smsNotifications) {
+                        // Send initial confirmation
+                        simulateSMSNotification(customerPhone, 'received', orderId);
+
+                        // Schedule "ready" notification after estimated time
+                        setTimeout(() => {
+                            simulateSMSNotification(customerPhone, 'ready for pickup', orderId);
+                        }, estimatedMinutes * 60 * 1000); // Convert minutes to milliseconds
+                    }
 
                     // Reset form
                     checkoutForm.reset();
