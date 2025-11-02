@@ -127,6 +127,47 @@
         button, a, .btn {
             transition: all 0.3s ease;
         }
+
+        /* Mobile Navigation Styles */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Hamburger Icon Animation */
+        .hamburger-line {
+            transition: all 0.3s ease;
+        }
+        .hamburger.open .line1 {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.open .line2 {
+            opacity: 0;
+        }
+        .hamburger.open .line3 {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Better touch targets for mobile */
+        @media (max-width: 768px) {
+            button, a, .btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+
+        /* Mobile modal improvements */
+        @media (max-width: 640px) {
+            .modal-overlay > div {
+                margin: 0 !important;
+                max-height: 100vh !important;
+                height: 100vh;
+                border-radius: 0 !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -139,18 +180,53 @@
                     <img src="src/assets/images/logo.jpg" alt="Bricks Pizza & Pub Logo" class="h-12 w-auto rounded">
                     <h1 class="text-xl md:text-2xl font-bold text-cream hidden sm:block">Bricks Pizza & Pub</h1>
                 </div>
+
+                <!-- Desktop Navigation -->
                 <nav class="hidden md:flex space-x-6">
                     <a href="#home" class="hover:text-cream transition">Home</a>
                     <a href="#menu" class="hover:text-cream transition">Order Online</a>
                     <a href="#contact" class="hover:text-cream transition">Contact</a>
                 </nav>
-                <button onclick="toggleCart()" class="relative bg-brick hover:bg-brick/80 px-4 py-2 rounded-lg transition">
-                    <span>Cart</span>
-                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center hidden">0</span>
-                </button>
+
+                <!-- Mobile & Cart Buttons -->
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleCart()" class="relative bg-brick hover:bg-brick/80 px-4 py-2 rounded-lg transition">
+                        <span>Cart</span>
+                        <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center hidden">0</span>
+                    </button>
+
+                    <!-- Hamburger Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden hamburger p-2" id="hamburger-btn">
+                        <div class="w-6 h-0.5 bg-white mb-1 hamburger-line line1"></div>
+                        <div class="w-6 h-0.5 bg-white mb-1 hamburger-line line2"></div>
+                        <div class="w-6 h-0.5 bg-white hamburger-line line3"></div>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-charcoal text-white z-50 shadow-2xl md:hidden">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-xl font-bold text-cream">Menu</h2>
+                <button onclick="toggleMobileMenu()" class="text-white text-2xl">&times;</button>
+            </div>
+            <nav class="space-y-4">
+                <a href="#home" onclick="navigateTo('home'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Home</a>
+                <a href="#menu" onclick="navigateTo('menu'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Order Online</a>
+                <a href="#contact" onclick="navigateTo('contact'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Contact</a>
+            </nav>
+            <div class="mt-8 pt-8 border-t border-cream/20">
+                <p class="text-sm text-cream mb-2">Call us:</p>
+                <a href="tel:5304235281" class="text-lg font-bold hover:text-cream transition">(530) 423-5281</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden" onclick="toggleMobileMenu()"></div>
 
     <!-- Main Content Container -->
     <main id="app-content">
@@ -158,38 +234,38 @@
         <!-- HOME PAGE -->
         <section id="home" class="page">
             <!-- Hero Section -->
-            <div class="bg-gradient-to-r from-brick to-charcoal text-white py-20">
+            <div class="bg-gradient-to-r from-brick to-charcoal text-white py-12 md:py-20">
                 <div class="container mx-auto px-4 text-center">
-                    <img src="src/assets/images/logo.jpg" alt="Bricks Pizza & Pub" class="mx-auto mb-6 rounded-lg shadow-2xl w-64 md:w-80 float">
-                    <h2 class="text-5xl md:text-6xl font-bold mb-4 text-cream fade-in-up">Welcome to Bricks Pizza & Pub</h2>
-                    <p class="text-xl md:text-2xl mb-8 fade-in-up delay-100">Authentic brick oven pizza in Weaverville, CA</p>
-                    <button onclick="navigateTo('menu')" class="bg-white text-brick px-8 py-4 rounded-lg text-xl font-bold hover:bg-cream transition transform hover:scale-110 pulse glow fade-in-up delay-200">
+                    <img src="src/assets/images/logo.jpg" alt="Bricks Pizza & Pub" class="mx-auto mb-6 rounded-lg shadow-2xl w-48 sm:w-64 md:w-80 float">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-cream fade-in-up">Welcome to Bricks Pizza & Pub</h2>
+                    <p class="text-lg sm:text-xl md:text-2xl mb-8 fade-in-up delay-100">Authentic brick oven pizza in Weaverville, CA</p>
+                    <button onclick="navigateTo('menu')" class="bg-white text-brick px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-bold hover:bg-cream transition transform hover:scale-110 pulse glow fade-in-up delay-200">
                         Order Online Now
                     </button>
                 </div>
             </div>
 
             <!-- Featured Specials -->
-            <div class="container mx-auto px-4 py-16">
-                <h3 class="text-3xl font-bold text-center mb-12 text-charcoal">Featured Specials</h3>
-                <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div class="container mx-auto px-4 py-12 md:py-16">
+                <h3 class="text-2xl sm:text-3xl font-bold text-center mb-8 md:mb-12 text-charcoal">Featured Specials</h3>
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
                     <!-- Lunch Special -->
-                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream card-hover fade-in-up delay-100">
-                        <h4 class="text-2xl font-bold text-brick mb-2">Lunch Special</h4>
-                        <p class="text-gray-600 mb-4">Slice of Pizza + House Salad</p>
-                        <p class="text-4xl font-bold text-charcoal">$13.99</p>
+                    <div class="bg-white rounded-lg shadow-lg p-5 md:p-6 border-4 border-cream card-hover fade-in-up delay-100">
+                        <h4 class="text-xl md:text-2xl font-bold text-brick mb-2">Lunch Special</h4>
+                        <p class="text-gray-600 mb-4 text-sm md:text-base">Slice of Pizza + House Salad</p>
+                        <p class="text-3xl md:text-4xl font-bold text-charcoal">$13.99</p>
                     </div>
                     <!-- Student Special -->
-                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream card-hover fade-in-up delay-200">
-                        <h4 class="text-2xl font-bold text-brick mb-2">Student Special</h4>
-                        <p class="text-gray-600 mb-4">Slice of Pizza + Fountain Drink</p>
-                        <p class="text-4xl font-bold text-charcoal">$5.00</p>
+                    <div class="bg-white rounded-lg shadow-lg p-5 md:p-6 border-4 border-cream card-hover fade-in-up delay-200">
+                        <h4 class="text-xl md:text-2xl font-bold text-brick mb-2">Student Special</h4>
+                        <p class="text-gray-600 mb-4 text-sm md:text-base">Slice of Pizza + Fountain Drink</p>
+                        <p class="text-3xl md:text-4xl font-bold text-charcoal">$5.00</p>
                     </div>
                     <!-- Pizza by the Slice -->
-                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream card-hover fade-in-up delay-300">
-                        <h4 class="text-2xl font-bold text-brick mb-2">Pizza by the Slice</h4>
-                        <p class="text-gray-600 mb-4">Add extra flavor for $0.60</p>
-                        <p class="text-4xl font-bold text-charcoal">$5.99</p>
+                    <div class="bg-white rounded-lg shadow-lg p-5 md:p-6 border-4 border-cream card-hover fade-in-up delay-300 sm:col-span-2 md:col-span-1">
+                        <h4 class="text-xl md:text-2xl font-bold text-brick mb-2">Pizza by the Slice</h4>
+                        <p class="text-gray-600 mb-4 text-sm md:text-base">Add extra flavor for $0.60</p>
+                        <p class="text-3xl md:text-4xl font-bold text-charcoal">$5.99</p>
                     </div>
                 </div>
             </div>
@@ -208,11 +284,11 @@
 
         <!-- MENU / ORDER PAGE -->
         <section id="menu" class="page hidden">
-            <div class="container mx-auto px-4 py-8">
-                <h2 class="text-4xl font-bold text-center mb-8 text-charcoal">Order Online</h2>
+            <div class="container mx-auto px-4 py-6 md:py-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 md:mb-8 text-charcoal">Order Online</h2>
 
                 <!-- Menu Categories -->
-                <div id="menu-content" class="space-y-12">
+                <div id="menu-content" class="space-y-8 md:space-y-12">
                     <!-- Menu will be dynamically rendered here -->
                 </div>
             </div>
@@ -220,25 +296,25 @@
 
         <!-- CHECKOUT PAGE -->
         <section id="checkout" class="page hidden">
-            <div class="container mx-auto px-4 py-8 max-w-4xl">
-                <h2 class="text-4xl font-bold text-center mb-8 text-charcoal">Checkout</h2>
+            <div class="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 md:mb-8 text-charcoal">Checkout</h2>
 
                 <!-- Order Summary -->
-                <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-brick">Order Summary</h3>
-                    <div id="checkout-items" class="space-y-3 mb-4">
+                <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 mb-6 md:mb-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Order Summary</h3>
+                    <div id="checkout-items" class="space-y-3 mb-4 text-sm md:text-base">
                         <!-- Items will be rendered here -->
                     </div>
                     <div class="border-t pt-4 space-y-2">
-                        <div class="flex justify-between text-lg">
+                        <div class="flex justify-between text-base md:text-lg">
                             <span>Subtotal:</span>
                             <span id="checkout-subtotal">$0.00</span>
                         </div>
-                        <div class="flex justify-between text-lg">
+                        <div class="flex justify-between text-base md:text-lg">
                             <span>Tax (7.25%):</span>
                             <span id="checkout-tax">$0.00</span>
                         </div>
-                        <div class="flex justify-between text-2xl font-bold text-brick border-t pt-2">
+                        <div class="flex justify-between text-xl md:text-2xl font-bold text-brick border-t pt-2">
                             <span>Total:</span>
                             <span id="checkout-total">$0.00</span>
                         </div>
@@ -246,50 +322,50 @@
                 </div>
 
                 <!-- Checkout Form -->
-                <form id="checkout-form" class="space-y-8">
+                <form id="checkout-form" class="space-y-6 md:space-y-8">
                     <!-- Step 1: Contact Info -->
-                    <div class="bg-white rounded-lg shadow-lg p-6">
-                        <h3 class="text-2xl font-bold mb-4 text-brick">Step 1: Contact Information</h3>
+                    <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+                        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 1: Contact Information</h3>
                         <div class="grid md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-bold mb-2">Name *</label>
-                                <input type="text" id="customer-name" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                                <input type="text" id="customer-name" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                             </div>
                             <div>
                                 <label class="block text-sm font-bold mb-2">Phone *</label>
-                                <input type="tel" id="customer-phone" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                                <input type="tel" id="customer-phone" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-bold mb-2">Email *</label>
-                                <input type="email" id="customer-email" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                                <input type="email" id="customer-email" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                             </div>
                         </div>
                     </div>
 
                     <!-- Step 2: Payment Info (Mock) -->
-                    <div class="bg-white rounded-lg shadow-lg p-6">
-                        <h3 class="text-2xl font-bold mb-4 text-brick">Step 2: Payment Information</h3>
+                    <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+                        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 2: Payment Information</h3>
                         <p class="text-sm text-gray-600 mb-4 italic">This is a demo - no real payment processing</p>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-bold mb-2">Card Number</label>
-                                <input type="text" placeholder="4111 1111 1111 1111" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                                <input type="text" placeholder="4111 1111 1111 1111" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-bold mb-2">Expiry</label>
-                                    <input type="text" placeholder="MM/YY" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                                    <input type="text" placeholder="MM/YY" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-bold mb-2">CVV</label>
-                                    <input type="text" placeholder="123" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                                    <input type="text" placeholder="123" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="w-full bg-brick hover:bg-brick/80 text-white font-bold py-4 rounded-lg text-xl transition transform hover:scale-105">
+                    <button type="submit" class="w-full bg-brick hover:bg-brick/80 text-white font-bold py-4 rounded-lg text-lg md:text-xl transition transform hover:scale-105 glow">
                         <span id="submit-btn-text">Place Order</span>
                         <span id="submit-btn-loader" class="hidden">Processing...</span>
                     </button>
@@ -299,36 +375,36 @@
 
         <!-- CONTACT PAGE -->
         <section id="contact" class="page hidden">
-            <div class="container mx-auto px-4 py-12">
-                <h2 class="text-4xl font-bold text-center mb-12 text-charcoal">Contact Us</h2>
+            <div class="container mx-auto px-4 py-8 md:py-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 md:mb-12 text-charcoal">Contact Us</h2>
 
-                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
                     <!-- Contact Info -->
-                    <div class="bg-white rounded-lg shadow-lg p-8 space-y-6">
+                    <div class="bg-white rounded-lg shadow-lg p-6 md:p-8 space-y-6">
                         <div>
-                            <h3 class="text-xl font-bold text-brick mb-2">Location</h3>
-                            <p class="text-gray-700">Bricks Pizza & Pub</p>
-                            <p class="text-gray-700">520 Main Street</p>
-                            <p class="text-gray-700">Weaverville, CA</p>
+                            <h3 class="text-lg md:text-xl font-bold text-brick mb-2">Location</h3>
+                            <p class="text-gray-700 text-sm md:text-base">Bricks Pizza & Pub</p>
+                            <p class="text-gray-700 text-sm md:text-base">520 Main Street</p>
+                            <p class="text-gray-700 text-sm md:text-base">Weaverville, CA</p>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-brick mb-2">Phone</h3>
-                            <p class="text-gray-700">(530) 423-5281</p>
+                            <h3 class="text-lg md:text-xl font-bold text-brick mb-2">Phone</h3>
+                            <a href="tel:5304235281" class="text-gray-700 hover:text-brick transition text-sm md:text-base font-medium">(530) 423-5281</a>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-brick mb-2">Hours</h3>
-                            <p class="text-gray-700">Sunday: 11AM - 8PM</p>
-                            <p class="text-gray-700">Monday - Thursday: 11AM - 8PM</p>
-                            <p class="text-gray-700">Friday - Saturday: 11AM - 9PM</p>
+                            <h3 class="text-lg md:text-xl font-bold text-brick mb-2">Hours</h3>
+                            <p class="text-gray-700 text-sm md:text-base">Sunday: 11AM - 8PM</p>
+                            <p class="text-gray-700 text-sm md:text-base">Monday - Thursday: 11AM - 8PM</p>
+                            <p class="text-gray-700 text-sm md:text-base">Friday - Saturday: 11AM - 9PM</p>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-brick mb-2">Follow Us</h3>
-                            <a href="https://www.facebook.com/profile.php?id=61579018107619" target="_blank" class="text-blue-600 hover:underline">Facebook</a>
+                            <h3 class="text-lg md:text-xl font-bold text-brick mb-2">Follow Us</h3>
+                            <a href="https://www.facebook.com/profile.php?id=61579018107619" target="_blank" class="text-blue-600 hover:underline text-sm md:text-base">Facebook</a>
                         </div>
                     </div>
 
                     <!-- Google Map -->
-                    <div class="rounded-lg shadow-lg h-96 overflow-hidden">
+                    <div class="rounded-lg shadow-lg h-64 md:h-96 overflow-hidden">
                         <iframe
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3065.2!2d-122.9366!3d40.7311!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54d2f3e1e1e1e1e1%3A0x1e1e1e1e1e1e1e1e!2s520%20Main%20St%2C%20Weaverville%2C%20CA%2096093!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
                             width="100%"
@@ -637,6 +713,23 @@
                 window.scrollTo(0, 0);
             } else {
                 log(LOG_LEVEL.ERROR, `Page not found: ${page}`);
+            }
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const hamburger = document.getElementById('hamburger-btn');
+
+            mobileMenu.classList.toggle('open');
+            overlay.classList.toggle('hidden');
+            hamburger.classList.toggle('open');
+
+            // Prevent body scroll when menu is open
+            if (mobileMenu.classList.contains('open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
             }
         }
 
