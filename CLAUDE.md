@@ -94,20 +94,21 @@ src/
 
 **Specialty Pizza Prices**:
 - Personal 10": $17.99
-- Small 12": $24.99
+- Small 12": $24.99 (add +$4 for Cauliflower or Stuffed Crust = $28.99)
 - Medium 16": $28.99
 - Large 18": $32.99
 
 **Build Your Own Prices**:
 - Personal 10": $10.99
-- Small 12": $13.99
+- Small 12": $13.99 (add +$4 for Cauliflower or Stuffed Crust = $17.99)
 - Medium 16": $16.99
 - Large 18": $20.99
 - Add $2.99 per topping & protein
 
-**Cauliflower Crust** (12" only, +$4):
-- Specialty: $28.99
-- Build Your Own: $17.99 + $2.99 per topping & protein
+**Crust Options** (12" Small only, +$4):
+- Regular Crust (included)
+- Cauliflower Crust (+$4.00)
+- Stuffed Crust (+$4.00)
 
 ## Feature Implementation Notes
 

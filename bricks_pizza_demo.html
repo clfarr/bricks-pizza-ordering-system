@@ -687,13 +687,23 @@
                 <p class="text-gray-600 mb-6">${pizza.description}</p>
 
                 <div class="mb-6">
-                    <label class="block text-sm font-bold mb-2">Select Size</label>
+                    <label class="block text-sm font-bold mb-2">Select Size *</label>
                     <select id="specialty-size" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateSpecialtyPrice()">
                         <option value="personal">Personal 10" - $${pizza.prices.personal}</option>
                         <option value="small">Small 12" - $${pizza.prices.small}</option>
                         <option value="medium">Medium 16" - $${pizza.prices.medium}</option>
                         <option value="large">Large 18" - $${pizza.prices.large}</option>
                     </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2">Select Crust *</label>
+                    <select id="specialty-crust" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateSpecialtyPrice()">
+                        <option value="regular">Regular Crust (+$0.00)</option>
+                        <option value="cauliflower" disabled>Cauliflower Crust (+$4.00) - 12" only</option>
+                        <option value="stuffed" disabled>Stuffed Crust (+$4.00) - 12" only</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Cauliflower and Stuffed crusts available on 12" size only</p>
                 </div>
 
                 <div class="flex items-center justify-between mb-6 bg-cream/20 p-4 rounded-lg">
@@ -712,25 +722,65 @@
 
         function updateSpecialtyPrice() {
             const sizeSelect = document.getElementById('specialty-size');
+            const crustSelect = document.getElementById('specialty-crust');
             const priceDisplay = document.getElementById('specialty-price');
             const size = sizeSelect.value;
 
-            // Extract price from selected option text
+            // Enable/disable crust options based on size
+            const cauliflowerOption = crustSelect.querySelector('option[value="cauliflower"]');
+            const stuffedOption = crustSelect.querySelector('option[value="stuffed"]');
+
+            if (size === 'small') {
+                cauliflowerOption.disabled = false;
+                stuffedOption.disabled = false;
+                cauliflowerOption.textContent = 'Cauliflower Crust (+$4.00)';
+                stuffedOption.textContent = 'Stuffed Crust (+$4.00)';
+            } else {
+                cauliflowerOption.disabled = true;
+                stuffedOption.disabled = true;
+                cauliflowerOption.textContent = 'Cauliflower Crust (+$4.00) - 12" only';
+                stuffedOption.textContent = 'Stuffed Crust (+$4.00) - 12" only';
+
+                // Reset to regular if invalid selection
+                if (crustSelect.value !== 'regular') {
+                    crustSelect.value = 'regular';
+                }
+            }
+
+            // Extract base price from selected option text
             const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
             const priceText = selectedOption.text.split('$')[1];
-            const price = parseFloat(priceText);
+            let price = parseFloat(priceText);
+
+            // Add crust upcharge
+            const crust = crustSelect.value;
+            if (crust !== 'regular') {
+                price += 4.00;
+            }
 
             priceDisplay.textContent = `$${price.toFixed(2)}`;
         }
 
         function addSpecialtyToCart(pizza) {
             const size = document.getElementById('specialty-size').value;
-            const price = pizza.prices[size];
+            const crust = document.getElementById('specialty-crust').value;
+            let price = pizza.prices[size];
+
+            // Add crust upcharge
+            const crustMod = crust !== 'regular' ? 4.00 : 0;
+            price += crustMod;
+
+            // Build description with crust info
+            let description = `${capitalizeFirst(size)}`;
+            if (crust !== 'regular') {
+                description += `, ${capitalizeFirst(crust)} Crust`;
+            }
+            description += ` - ${pizza.description}`;
 
             const cartItem = {
-                id: `${pizza.id}-${size}-${Date.now()}`,
+                id: `${pizza.id}-${size}-${crust}-${Date.now()}`,
                 name: pizza.name,
-                description: `${capitalizeFirst(size)} - ${pizza.description}`,
+                description: description,
                 price: price,
                 quantity: 1,
                 type: 'specialty'
