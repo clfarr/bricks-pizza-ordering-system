@@ -185,6 +185,7 @@
                 <nav class="hidden md:flex space-x-6">
                     <a href="#home" class="hover:text-cream transition">Home</a>
                     <a href="#menu" class="hover:text-cream transition">Order Online</a>
+                    <a href="#orders" class="hover:text-cream transition">My Orders</a>
                     <a href="#contact" class="hover:text-cream transition">Contact</a>
                 </nav>
 
@@ -216,6 +217,7 @@
             <nav class="space-y-4">
                 <a href="#home" onclick="navigateTo('home'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Home</a>
                 <a href="#menu" onclick="navigateTo('menu'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Order Online</a>
+                <a href="#orders" onclick="navigateTo('orders'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">My Orders</a>
                 <a href="#contact" onclick="navigateTo('contact'); toggleMobileMenu();" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Contact</a>
             </nav>
             <div class="mt-8 pt-8 border-t border-cream/20">
@@ -323,9 +325,44 @@
 
                 <!-- Checkout Form -->
                 <form id="checkout-form" class="space-y-6 md:space-y-8">
-                    <!-- Step 1: Contact Info -->
+                    <!-- Step 1: Order Type & Time -->
                     <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
-                        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 1: Contact Information</h3>
+                        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 1: Order Details</h3>
+
+                        <!-- Order Type -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-bold mb-3">Order Type *</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <label class="relative cursor-pointer">
+                                    <input type="radio" name="order-type" value="pickup" checked class="peer sr-only" onchange="toggleOrderType()">
+                                    <div class="border-2 border-gray-300 rounded-lg p-4 text-center peer-checked:border-brick peer-checked:bg-brick/5 transition">
+                                        <span class="text-lg font-bold">🏪 Pickup</span>
+                                        <p class="text-xs text-gray-600 mt-1">Available Now</p>
+                                    </div>
+                                </label>
+                                <label class="relative cursor-not-allowed opacity-50">
+                                    <input type="radio" name="order-type" value="delivery" disabled class="peer sr-only">
+                                    <div class="border-2 border-gray-300 rounded-lg p-4 text-center">
+                                        <span class="text-lg font-bold">🚗 Delivery</span>
+                                        <p class="text-xs text-gray-600 mt-1">Coming Soon</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Pickup Time -->
+                        <div id="pickup-time-section">
+                            <label class="block text-sm font-bold mb-2">Pickup Time *</label>
+                            <select id="pickup-time" required class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                <option value="">Select a time...</option>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Orders typically ready in 20-30 minutes</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Contact Info -->
+                    <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+                        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 2: Contact Information</h3>
                         <div class="grid md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-bold mb-2">Name *</label>
@@ -342,9 +379,9 @@
                         </div>
                     </div>
 
-                    <!-- Step 2: Payment Info (Mock) -->
+                    <!-- Step 3: Payment Info (Mock) -->
                     <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
-                        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 2: Payment Information</h3>
+                        <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 3: Payment Information</h3>
                         <p class="text-sm text-gray-600 mb-4 italic">This is a demo - no real payment processing</p>
                         <div class="space-y-4">
                             <div>
@@ -370,6 +407,17 @@
                         <span id="submit-btn-loader" class="hidden">Processing...</span>
                     </button>
                 </form>
+            </div>
+        </section>
+
+        <!-- MY ORDERS PAGE -->
+        <section id="orders" class="page hidden">
+            <div class="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 md:mb-8 text-charcoal">My Orders</h2>
+
+                <div id="orders-content">
+                    <!-- Orders will be rendered here -->
+                </div>
             </div>
         </section>
 
@@ -497,14 +545,19 @@
     <div id="confirmation-modal" class="hidden fixed inset-0 z-50 modal-overlay">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg shadow-2xl max-w-md w-full slide-in">
-                <div class="p-8 text-center">
-                    <div class="text-6xl mb-4">✅</div>
-                    <h3 class="text-3xl font-bold text-brick mb-4">Order Placed!</h3>
-                    <p class="text-gray-600 mb-6">Thank you for your order. We'll have it ready soon!</p>
+                <div class="p-6 md:p-8 text-center">
+                    <div class="text-5xl md:text-6xl mb-4">✅</div>
+                    <h3 class="text-2xl md:text-3xl font-bold text-brick mb-4">Order Placed!</h3>
+                    <p class="text-gray-600 mb-4 text-sm md:text-base">Thank you for your order. We'll have it ready for pickup soon!</p>
                     <p class="text-sm text-gray-500 mb-6">Check the browser console to see the Square API payload</p>
-                    <button onclick="closeConfirmation()" class="bg-brick hover:bg-brick/80 text-white font-bold py-3 px-8 rounded-lg transition">
-                        Back to Home
-                    </button>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="navigateTo('orders'); closeConfirmation();" class="bg-brick hover:bg-brick/80 text-white font-bold py-3 px-6 rounded-lg transition glow">
+                            Track My Order
+                        </button>
+                        <button onclick="closeConfirmation()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg transition">
+                            Back to Home
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -671,6 +724,7 @@
         // ===================================
         let cart = [];
         let currentPage = 'home';
+        let orders = JSON.parse(localStorage.getItem('bricksOrders') || '[]');
 
         // ===================================
         // LOGGING UTILITIES
@@ -709,6 +763,11 @@
                 targetPage.classList.remove('hidden');
                 currentPage = page;
 
+                // Render orders if navigating to orders page
+                if (page === 'orders') {
+                    renderOrders();
+                }
+
                 // Scroll to top
                 window.scrollTo(0, 0);
             } else {
@@ -731,6 +790,145 @@
             } else {
                 document.body.style.overflow = '';
             }
+        }
+
+        // ===================================
+        // ORDER MANAGEMENT
+        // ===================================
+        function generatePickupTimes() {
+            const select = document.getElementById('pickup-time');
+            const now = new Date();
+            const times = [];
+
+            // Generate times starting 30 minutes from now
+            let startTime = new Date(now.getTime() + 30 * 60000);
+            startTime.setMinutes(Math.ceil(startTime.getMinutes() / 15) * 15); // Round to nearest 15 min
+
+            // Generate 20 time slots (5 hours worth)
+            for (let i = 0; i < 20; i++) {
+                const time = new Date(startTime.getTime() + i * 15 * 60000);
+                const hours = time.getHours();
+                const minutes = time.getMinutes().toString().padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const displayHours = hours % 12 || 12;
+                const timeString = `${displayHours}:${minutes} ${ampm}`;
+                const isoString = time.toISOString();
+
+                times.push({ display: timeString, value: isoString });
+            }
+
+            times.forEach(time => {
+                const option = document.createElement('option');
+                option.value = time.value;
+                option.textContent = time.display;
+                select.appendChild(option);
+            });
+        }
+
+        function toggleOrderType() {
+            // Currently only pickup is available
+            // This function is here for future delivery expansion
+        }
+
+        function saveOrder(orderData) {
+            orders.unshift(orderData); // Add to beginning of array
+            localStorage.setItem('bricksOrders', JSON.stringify(orders));
+            log(LOG_LEVEL.INFO, 'Order saved to localStorage', orderData);
+        }
+
+        function getOrderStatus(orderTime) {
+            const now = Date.now();
+            const orderDate = new Date(orderTime).getTime();
+            const elapsed = now - orderDate;
+
+            // Status progression based on time elapsed
+            if (elapsed < 5 * 60000) { // 0-5 minutes
+                return { status: 'received', text: 'Order Received', icon: '📝', color: 'blue' };
+            } else if (elapsed < 20 * 60000) { // 5-20 minutes
+                return { status: 'preparing', text: 'Being Prepared', icon: '👨‍🍳', color: 'yellow' };
+            } else { // 20+ minutes
+                return { status: 'ready', text: 'Ready for Pickup', icon: '✅', color: 'green' };
+            }
+        }
+
+        function renderOrders() {
+            const ordersContent = document.getElementById('orders-content');
+
+            if (orders.length === 0) {
+                ordersContent.innerHTML = `
+                    <div class="text-center py-12">
+                        <p class="text-gray-500 text-lg mb-4">No orders yet</p>
+                        <button onclick="navigateTo('menu')" class="bg-brick hover:bg-brick/80 text-white font-bold py-3 px-6 rounded-lg transition glow">
+                            Start Ordering
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="space-y-6">';
+
+            orders.forEach((order, index) => {
+                const status = getOrderStatus(order.timestamp);
+                const orderDate = new Date(order.timestamp);
+                const pickupDate = new Date(order.pickupTime);
+
+                html += `
+                    <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 card-hover">
+                        <!-- Order Header -->
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg md:text-xl font-bold text-charcoal">Order #${order.id}</h3>
+                                <p class="text-sm text-gray-500">${orderDate.toLocaleString()}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-block px-3 py-1 rounded-full text-sm font-bold bg-${status.color}-100 text-${status.color}-700">
+                                    ${status.icon} ${status.text}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Order Details -->
+                        <div class="border-t border-b py-3 mb-3">
+                            <p class="text-sm font-bold text-brick mb-1">Pickup Time:</p>
+                            <p class="text-base">${pickupDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</p>
+                        </div>
+
+                        <!-- Order Items -->
+                        <div class="space-y-2 mb-3">
+                            ${order.items.map(item => `
+                                <div class="flex justify-between text-sm">
+                                    <span>${item.quantity}x ${item.name}</span>
+                                    <span class="font-bold">$${(item.price * item.quantity).toFixed(2)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Order Total -->
+                        <div class="border-t pt-3">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-lg">Total:</span>
+                                <span class="font-bold text-xl text-brick">$${order.total.toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <!-- Status Progress Bar -->
+                        <div class="mt-4">
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="${status.status === 'received' || status.status === 'preparing' || status.status === 'ready' ? 'text-brick font-bold' : 'text-gray-400'}">Received</span>
+                                <span class="${status.status === 'preparing' || status.status === 'ready' ? 'text-brick font-bold' : 'text-gray-400'}">Preparing</span>
+                                <span class="${status.status === 'ready' ? 'text-brick font-bold' : 'text-gray-400'}">Ready</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-brick rounded-full h-2 transition-all duration-500" style="width: ${status.status === 'received' ? '33%' : status.status === 'preparing' ? '66%' : '100%'}"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            ordersContent.innerHTML = html;
         }
 
         // ===================================
@@ -1356,6 +1554,7 @@
             toggleCart();
             navigateTo('checkout');
             renderCheckout();
+            generatePickupTimes(); // Generate pickup times when entering checkout
         }
 
         // ===================================
@@ -1404,18 +1603,31 @@
                 const customerName = document.getElementById('customer-name').value;
                 const customerPhone = document.getElementById('customer-phone').value;
                 const customerEmail = document.getElementById('customer-email').value;
+                const pickupTime = document.getElementById('pickup-time').value;
+                const orderType = document.querySelector('input[name="order-type"]:checked').value;
+
+                // Validate pickup time
+                if (!pickupTime) {
+                    alert('Please select a pickup time');
+                    document.getElementById('submit-btn-text').classList.remove('hidden');
+                    document.getElementById('submit-btn-loader').classList.add('hidden');
+                    return;
+                }
 
                 // Calculate totals
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const tax = subtotal * 0.0725;
                 const total = subtotal + tax;
 
+                // Create order ID
+                const orderId = `${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
+
                 // Build Square API-style payload
                 const orderPayload = {
                     idempotency_key: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
                     order: {
                         location_id: "DEMO_LOCATION_520_MAIN_ST",
-                        reference_id: `BRICKS_${Date.now()}`,
+                        reference_id: `BRICKS_${orderId}`,
                         customer_id: customerEmail,
                         line_items: cart.map(item => ({
                             name: item.name,
@@ -1435,10 +1647,28 @@
                             customer_name: customerName,
                             customer_phone: customerPhone,
                             customer_email: customerEmail,
-                            order_type: "online",
+                            order_type: orderType,
+                            pickup_time: pickupTime,
                             restaurant: "Bricks Pizza & Pub"
                         }
                     }
+                };
+
+                // Create order object for storage
+                const orderData = {
+                    id: orderId,
+                    timestamp: Date.now(),
+                    pickupTime: pickupTime,
+                    orderType: orderType,
+                    customer: {
+                        name: customerName,
+                        phone: customerPhone,
+                        email: customerEmail
+                    },
+                    items: cart.map(item => ({...item})),
+                    subtotal: subtotal,
+                    tax: tax,
+                    total: total
                 };
 
                 // Simulate API call with timeout
@@ -1462,6 +1692,9 @@
                         total: total,
                         itemCount: cart.length
                     });
+
+                    // Save order to localStorage
+                    saveOrder(orderData);
 
                     // Reset form
                     checkoutForm.reset();
@@ -1510,11 +1743,28 @@
             window.addEventListener('hashchange', function() {
                 const hash = window.location.hash.slice(1) || 'home';
                 navigateTo(hash);
+
+                // Render orders page when navigated to
+                if (hash === 'orders') {
+                    renderOrders();
+                }
             });
 
             // Initial navigation based on hash
             const initialHash = window.location.hash.slice(1) || 'home';
             navigateTo(initialHash);
+
+            // Render orders if starting on orders page
+            if (initialHash === 'orders') {
+                renderOrders();
+            }
+
+            // Auto-refresh orders page every 30 seconds if on that page
+            setInterval(() => {
+                if (currentPage === 'orders') {
+                    renderOrders();
+                }
+            }, 30000);
         });
     </script>
 </body>
