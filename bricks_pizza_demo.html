@@ -37,6 +37,96 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
+        /* Scroll animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Pulse animation for CTAs */
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Bounce animation */
+        .bounce {
+            animation: bounce 1s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Float animation */
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Rotate animation for loading */
+        .rotate {
+            animation: rotate 1s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Shimmer effect */
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Enhanced hover effects */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Glow effect */
+        .glow {
+            box-shadow: 0 0 20px rgba(181, 90, 60, 0.5);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .glow:hover {
+            box-shadow: 0 0 30px rgba(181, 90, 60, 0.8);
+        }
+
+        /* Stagger animation delays */
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        /* Smooth transitions for all interactive elements */
+        button, a, .btn {
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -70,10 +160,10 @@
             <!-- Hero Section -->
             <div class="bg-gradient-to-r from-brick to-charcoal text-white py-20">
                 <div class="container mx-auto px-4 text-center">
-                    <img src="src/assets/images/logo.jpg" alt="Bricks Pizza & Pub" class="mx-auto mb-6 rounded-lg shadow-2xl w-64 md:w-80">
-                    <h2 class="text-5xl md:text-6xl font-bold mb-4 text-cream">Welcome to Bricks Pizza & Pub</h2>
-                    <p class="text-xl md:text-2xl mb-8">Authentic brick oven pizza in Weaverville, CA</p>
-                    <button onclick="navigateTo('menu')" class="bg-white text-brick px-8 py-4 rounded-lg text-xl font-bold hover:bg-cream transition transform hover:scale-105">
+                    <img src="src/assets/images/logo.jpg" alt="Bricks Pizza & Pub" class="mx-auto mb-6 rounded-lg shadow-2xl w-64 md:w-80 float">
+                    <h2 class="text-5xl md:text-6xl font-bold mb-4 text-cream fade-in-up">Welcome to Bricks Pizza & Pub</h2>
+                    <p class="text-xl md:text-2xl mb-8 fade-in-up delay-100">Authentic brick oven pizza in Weaverville, CA</p>
+                    <button onclick="navigateTo('menu')" class="bg-white text-brick px-8 py-4 rounded-lg text-xl font-bold hover:bg-cream transition transform hover:scale-110 pulse glow fade-in-up delay-200">
                         Order Online Now
                     </button>
                 </div>
@@ -84,19 +174,19 @@
                 <h3 class="text-3xl font-bold text-center mb-12 text-charcoal">Featured Specials</h3>
                 <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     <!-- Lunch Special -->
-                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream">
+                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream card-hover fade-in-up delay-100">
                         <h4 class="text-2xl font-bold text-brick mb-2">Lunch Special</h4>
                         <p class="text-gray-600 mb-4">Slice of Pizza + House Salad</p>
                         <p class="text-4xl font-bold text-charcoal">$13.99</p>
                     </div>
                     <!-- Student Special -->
-                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream">
+                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream card-hover fade-in-up delay-200">
                         <h4 class="text-2xl font-bold text-brick mb-2">Student Special</h4>
                         <p class="text-gray-600 mb-4">Slice of Pizza + Fountain Drink</p>
                         <p class="text-4xl font-bold text-charcoal">$5.00</p>
                     </div>
                     <!-- Pizza by the Slice -->
-                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream">
+                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream card-hover fade-in-up delay-300">
                         <h4 class="text-2xl font-bold text-brick mb-2">Pizza by the Slice</h4>
                         <p class="text-gray-600 mb-4">Add extra flavor for $0.60</p>
                         <p class="text-4xl font-bold text-charcoal">$5.99</p>
@@ -237,9 +327,18 @@
                         </div>
                     </div>
 
-                    <!-- Map Placeholder -->
-                    <div class="bg-gray-300 rounded-lg shadow-lg h-96 flex items-center justify-center">
-                        <p class="text-gray-600 font-bold">Google Map Placeholder</p>
+                    <!-- Google Map -->
+                    <div class="rounded-lg shadow-lg h-96 overflow-hidden">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3065.2!2d-122.9366!3d40.7311!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54d2f3e1e1e1e1e1%3A0x1e1e1e1e1e1e1e1e!2s520%20Main%20St%2C%20Weaverville%2C%20CA%2096093!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
+                            width="100%"
+                            height="100%"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Bricks Pizza & Pub Location">
+                        </iframe>
                     </div>
                 </div>
             </div>
@@ -555,27 +654,27 @@
                 <div class="mb-12">
                     <h3 class="text-3xl font-bold mb-6 text-brick">Daily Specials</h3>
                     <div class="grid md:grid-cols-3 gap-6">
-                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream">
+                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream card-hover">
                             <h4 class="text-xl font-bold text-charcoal mb-2">${MENU_DATA.lunchSpecial.name}</h4>
                             <p class="text-gray-600 mb-3">${MENU_DATA.lunchSpecial.description}</p>
                             <p class="text-2xl font-bold text-brick mb-4">$${MENU_DATA.lunchSpecial.price}</p>
-                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.lunchSpecial)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full">
+                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.lunchSpecial)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full glow">
                                 Add to Cart
                             </button>
                         </div>
-                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream">
+                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream card-hover">
                             <h4 class="text-xl font-bold text-charcoal mb-2">${MENU_DATA.studentSpecial.name}</h4>
                             <p class="text-gray-600 mb-3">${MENU_DATA.studentSpecial.description}</p>
                             <p class="text-2xl font-bold text-brick mb-4">$${MENU_DATA.studentSpecial.price}</p>
-                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.studentSpecial)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full">
+                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.studentSpecial)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full glow">
                                 Add to Cart
                             </button>
                         </div>
-                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream">
+                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream card-hover">
                             <h4 class="text-xl font-bold text-charcoal mb-2">${MENU_DATA.pizzaByTheSlice.name}</h4>
                             <p class="text-gray-600 mb-3">Add extra flavor for $${MENU_DATA.pizzaByTheSlice.extraFlavor}</p>
                             <p class="text-2xl font-bold text-brick mb-4">$${MENU_DATA.pizzaByTheSlice.basePrice}</p>
-                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.pizzaByTheSlice)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full">
+                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.pizzaByTheSlice)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full glow">
                                 Add to Cart
                             </button>
                         </div>
@@ -587,14 +686,14 @@
             html += `
                 <div class="mb-12">
                     <h3 class="text-3xl font-bold mb-6 text-brick">Build Your Own Pizza</h3>
-                    <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
                         <div class="flex justify-between items-center">
                             <div>
                                 <h4 class="text-xl font-bold text-charcoal">Build Your Own</h4>
                                 <p class="text-gray-600">Create your perfect pizza with our fresh ingredients</p>
                                 <p class="text-sm text-gray-500 mt-2">Starting at $10.99 | Add toppings for $2.99 each</p>
                             </div>
-                            <button onclick="openBYOModal()" class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition">
+                            <button onclick="openBYOModal()" class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition glow pulse">
                                 Customize
                             </button>
                         </div>
@@ -611,11 +710,11 @@
 
             MENU_DATA.specialtyPizzas.forEach(pizza => {
                 html += `
-                    <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
                         <h4 class="text-xl font-bold text-charcoal mb-2">${pizza.name}</h4>
                         <p class="text-gray-600 mb-3">${pizza.description}</p>
                         <p class="text-sm text-gray-500 mb-4">Personal $${pizza.prices.personal} | Small $${pizza.prices.small} | Medium $${pizza.prices.medium} | Large $${pizza.prices.large}</p>
-                        <button onclick='openSpecialtyModal(${JSON.stringify(pizza)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full">
+                        <button onclick='openSpecialtyModal(${JSON.stringify(pizza)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full glow">
                             Add to Cart
                         </button>
                     </div>
@@ -633,14 +732,14 @@
 
             MENU_DATA.starters.forEach(starter => {
                 html += `
-                    <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
                         <h4 class="text-xl font-bold text-charcoal mb-2">${starter.name}</h4>
                         ${starter.hasSizes ?
                             `<p class="text-sm text-gray-500 mb-2">1/2 Order $${starter.prices.half} | Full Order $${starter.prices.full}</p>` :
                             `<p class="text-sm text-gray-500 mb-2">$${starter.price}</p>`
                         }
                         ${starter.note ? `<p class="text-xs text-gray-400 mb-4">${starter.note}</p>` : '<div class="mb-4"></div>'}
-                        <button onclick='openStarterModal(${JSON.stringify(starter).replace(/'/g, "\\'")})'  class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition w-full">
+                        <button onclick='openStarterModal(${JSON.stringify(starter).replace(/'/g, "\\'")})'  class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition w-full glow">
                             Add to Cart
                         </button>
                     </div>
@@ -658,10 +757,10 @@
 
             MENU_DATA.beverages.forEach(bev => {
                 html += `
-                    <div class="bg-white rounded-lg shadow-lg p-6">
+                    <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
                         <h4 class="text-lg font-bold text-charcoal mb-2">${bev.name}</h4>
                         <p class="text-sm text-gray-500 mb-4">$${bev.price}</p>
-                        <button onclick='addBeverageToCart(${JSON.stringify(bev)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition w-full">
+                        <button onclick='addBeverageToCart(${JSON.stringify(bev)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition w-full glow">
                             Add
                         </button>
                     </div>
