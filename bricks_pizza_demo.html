@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bricks Pizza & Pub - Interactive Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brick: '#B55A3C',
+                        charcoal: '#3B3426',
+                        cream: '#D4A574',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom animations and styles */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 0.2s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header / Navigation -->
+    <header class="bg-charcoal text-white sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-2xl md:text-3xl font-bold text-cream">Bricks Pizza & Pub</h1>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#home" class="hover:text-cream transition">Home</a>
+                    <a href="#menu" class="hover:text-cream transition">Order Online</a>
+                    <a href="#contact" class="hover:text-cream transition">Contact</a>
+                </nav>
+                <button onclick="toggleCart()" class="relative bg-brick hover:bg-brick/80 px-4 py-2 rounded-lg transition">
+                    <span>Cart</span>
+                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center hidden">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main id="app-content">
+
+        <!-- HOME PAGE -->
+        <section id="home" class="page">
+            <!-- Hero Section -->
+            <div class="bg-gradient-to-r from-brick to-charcoal text-white py-20">
+                <div class="container mx-auto px-4 text-center">
+                    <h2 class="text-5xl md:text-6xl font-bold mb-4 text-cream">Welcome to Bricks Pizza & Pub</h2>
+                    <p class="text-xl md:text-2xl mb-8">Authentic brick oven pizza in Weaverville, CA</p>
+                    <button onclick="navigateTo('menu')" class="bg-white text-brick px-8 py-4 rounded-lg text-xl font-bold hover:bg-cream transition transform hover:scale-105">
+                        Order Online Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Featured Specials -->
+            <div class="container mx-auto px-4 py-16">
+                <h3 class="text-3xl font-bold text-center mb-12 text-charcoal">Featured Specials</h3>
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <!-- Student Special -->
+                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream">
+                        <h4 class="text-2xl font-bold text-brick mb-2">Student Special</h4>
+                        <p class="text-gray-600 mb-4">Slice of Pizza + Fountain Drink</p>
+                        <p class="text-4xl font-bold text-charcoal">$5.00</p>
+                    </div>
+                    <!-- Pizza by the Slice -->
+                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream">
+                        <h4 class="text-2xl font-bold text-brick mb-2">Pizza by the Slice</h4>
+                        <p class="text-gray-600 mb-4">Add extra flavor for $0.60</p>
+                        <p class="text-4xl font-bold text-charcoal">$5.99</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="bg-charcoal text-white py-16">
+                <div class="container mx-auto px-4 max-w-3xl text-center">
+                    <h3 class="text-3xl font-bold mb-6 text-cream">About Us</h3>
+                    <p class="text-lg leading-relaxed">
+                        Established in 2025, Bricks Pizza & Pub brings authentic brick oven pizza to the heart of Weaverville, CA.
+                        We use only the finest ingredients and traditional techniques to create pizzas that keep our community coming back for more.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MENU / ORDER PAGE -->
+        <section id="menu" class="page hidden">
+            <div class="container mx-auto px-4 py-8">
+                <h2 class="text-4xl font-bold text-center mb-8 text-charcoal">Order Online</h2>
+
+                <!-- Menu Categories -->
+                <div id="menu-content" class="space-y-12">
+                    <!-- Menu will be dynamically rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- CHECKOUT PAGE -->
+        <section id="checkout" class="page hidden">
+            <div class="container mx-auto px-4 py-8 max-w-4xl">
+                <h2 class="text-4xl font-bold text-center mb-8 text-charcoal">Checkout</h2>
+
+                <!-- Order Summary -->
+                <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                    <h3 class="text-2xl font-bold mb-4 text-brick">Order Summary</h3>
+                    <div id="checkout-items" class="space-y-3 mb-4">
+                        <!-- Items will be rendered here -->
+                    </div>
+                    <div class="border-t pt-4 space-y-2">
+                        <div class="flex justify-between text-lg">
+                            <span>Subtotal:</span>
+                            <span id="checkout-subtotal">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg">
+                            <span>Tax (7.25%):</span>
+                            <span id="checkout-tax">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-2xl font-bold text-brick border-t pt-2">
+                            <span>Total:</span>
+                            <span id="checkout-total">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checkout Form -->
+                <form id="checkout-form" class="space-y-8">
+                    <!-- Step 1: Contact Info -->
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="text-2xl font-bold mb-4 text-brick">Step 1: Contact Information</h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-2">Name *</label>
+                                <input type="text" id="customer-name" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold mb-2">Phone *</label>
+                                <input type="tel" id="customer-phone" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-bold mb-2">Email *</label>
+                                <input type="email" id="customer-email" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Payment Info (Mock) -->
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="text-2xl font-bold mb-4 text-brick">Step 2: Payment Information</h3>
+                        <p class="text-sm text-gray-600 mb-4 italic">This is a demo - no real payment processing</p>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-2">Card Number</label>
+                                <input type="text" placeholder="4111 1111 1111 1111" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Expiry</label>
+                                    <input type="text" placeholder="MM/YY" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">CVV</label>
+                                    <input type="text" placeholder="123" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full bg-brick hover:bg-brick/80 text-white font-bold py-4 rounded-lg text-xl transition transform hover:scale-105">
+                        <span id="submit-btn-text">Place Order</span>
+                        <span id="submit-btn-loader" class="hidden">Processing...</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- CONTACT PAGE -->
+        <section id="contact" class="page hidden">
+            <div class="container mx-auto px-4 py-12">
+                <h2 class="text-4xl font-bold text-center mb-12 text-charcoal">Contact Us</h2>
+
+                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <!-- Contact Info -->
+                    <div class="bg-white rounded-lg shadow-lg p-8 space-y-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-brick mb-2">Location</h3>
+                            <p class="text-gray-700">Bricks Pizza & Pub</p>
+                            <p class="text-gray-700">520 Main Street</p>
+                            <p class="text-gray-700">Weaverville, CA</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-brick mb-2">Phone</h3>
+                            <p class="text-gray-700">(530) 423-5281</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-brick mb-2">Hours</h3>
+                            <p class="text-gray-700">Monday - Thursday: 11AM - 9PM</p>
+                            <p class="text-gray-700">Friday - Saturday: 11AM - 11PM</p>
+                            <p class="text-gray-700">Sunday: 11AM - 9PM</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-brick mb-2">Follow Us</h3>
+                            <a href="https://www.facebook.com/profile.php?id=61579018107619" target="_blank" class="text-blue-600 hover:underline">Facebook</a>
+                        </div>
+                    </div>
+
+                    <!-- Map Placeholder -->
+                    <div class="bg-gray-300 rounded-lg shadow-lg h-96 flex items-center justify-center">
+                        <p class="text-gray-600 font-bold">Google Map Placeholder</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal text-white py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-cream font-bold mb-2">Bricks Pizza & Pub</p>
+            <p class="text-sm">520 Main Street, Weaverville, CA | (530) 423-5281</p>
+            <p class="text-sm mt-2">© 2025 Bricks Pizza & Pub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- MODALS -->
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="hidden fixed inset-0 z-50 modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-2xl font-bold text-charcoal">Your Cart</h3>
+                        <button onclick="toggleCart()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                    </div>
+
+                    <div id="cart-items" class="space-y-4 mb-6">
+                        <!-- Cart items will be rendered here -->
+                    </div>
+
+                    <div class="border-t pt-4 space-y-2 mb-6">
+                        <div class="flex justify-between text-lg">
+                            <span>Subtotal:</span>
+                            <span id="cart-subtotal">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg">
+                            <span>Tax (7.25%):</span>
+                            <span id="cart-tax">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-2xl font-bold text-brick">
+                            <span>Total:</span>
+                            <span id="cart-total">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button onclick="toggleCart()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 rounded-lg transition">
+                            Continue Shopping
+                        </button>
+                        <button onclick="proceedToCheckout()" class="flex-1 bg-brick hover:bg-brick/80 text-white font-bold py-3 rounded-lg transition">
+                            Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Customization Modal -->
+    <div id="item-modal" class="hidden fixed inset-0 z-50 modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 id="modal-title" class="text-2xl font-bold text-charcoal">Customize Item</h3>
+                        <button onclick="closeItemModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                    </div>
+
+                    <div id="modal-body">
+                        <!-- Dynamic content will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div id="confirmation-modal" class="hidden fixed inset-0 z-50 modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-md w-full slide-in">
+                <div class="p-8 text-center">
+                    <div class="text-6xl mb-4">✅</div>
+                    <h3 class="text-3xl font-bold text-brick mb-4">Order Placed!</h3>
+                    <p class="text-gray-600 mb-6">Thank you for your order. We'll have it ready soon!</p>
+                    <p class="text-sm text-gray-500 mb-6">Check the browser console to see the Square API payload</p>
+                    <button onclick="closeConfirmation()" class="bg-brick hover:bg-brick/80 text-white font-bold py-3 px-8 rounded-lg transition">
+                        Back to Home
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===================================
+        // MENU DATABASE
+        // ===================================
+        const MENU_DATA = {
+            specialtyPizzas: [
+                {
+                    id: 'sp-pepperoni',
+                    name: 'Pepperoni',
+                    description: 'Pepperoni and cheese',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-grandslam',
+                    name: 'Grand Slam',
+                    description: 'Italian sausage, bacon, pepperoni, and Canadian bacon with marinara sauce',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-ashway',
+                    name: 'Ashway',
+                    description: 'Chicken, onions, jalapeños, cilantro, and bell peppers with basil pesto sauce',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-popeye',
+                    name: 'Popeye',
+                    description: 'Chicken, spinach, mushrooms, onions, and bell peppers with white garlic sauce',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-overload',
+                    name: 'Overload',
+                    description: 'Chicken, bacon, artichoke hearts, onions, tomatoes, and olives with creamy garlic sauce',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-delicious',
+                    name: 'Delicious',
+                    description: 'Pepperoni, bacon, tomatoes, and olives with BBQ sauce',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-aloha',
+                    name: 'Aloha',
+                    description: 'Ham, pineapple, bacon, onions, and tomatoes with Polynesian sauce, topped with parmesan cheese',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                }
+            ],
+            buildYourOwn: {
+                id: 'byo',
+                name: 'Build Your Own Pizza',
+                description: 'Create your perfect pizza',
+                category: 'byo',
+                basePrices: {
+                    personal: 10.99,
+                    small: 13.99,
+                    medium: 16.99,
+                    large: 20.99
+                },
+                crustOptions: [
+                    { name: 'Regular', price: 0, sizes: ['personal', 'small', 'medium', 'large'] },
+                    { name: 'Cauliflower', price: 4.00, sizes: ['small'] },
+                    { name: 'Stuffed', price: 4.00, sizes: ['small'] }
+                ],
+                sauces: ['Creamy Alfredo', 'Alfredo BBQ', 'Basil Pesto'],
+                proteins: ['Italian Sausage', 'Salami', 'Pepperoni', 'Bacon', 'Ham', 'Canadian Bacon', 'Chicken'],
+                toppings: ['Black Olives', 'Green Olives', 'Tomatoes', 'Mushrooms', 'Bell Peppers', 'Spinach', 'Jalapeños', 'Pineapple', 'Onions', 'Artichoke Hearts', 'Cilantro'],
+                toppingPrice: 2.99
+            },
+            starters: [
+                { id: 'st-mozz', name: 'Mozzarella Sticks', hasSizes: true, prices: { half: 8.99, full: 12.99 } },
+                { id: 'st-wings', name: 'Chicken Wings', hasSizes: true, prices: { half: 8.99, full: 14.99 } },
+                { id: 'st-fries', name: 'Fries', hasSizes: false, price: 5.99 },
+                { id: 'st-pickles', name: 'Fried Pickles', hasSizes: false, price: 6.99 },
+                { id: 'st-garlic', name: 'Garlic Bites', hasSizes: false, price: 6.99 },
+                { id: 'st-salad', name: 'Salad', hasSizes: false, price: 6.99 },
+                { id: 'st-mushroom', name: 'Trio Mushroom', hasSizes: false, price: 8.99 },
+                { id: 'st-tots', name: 'Loaded Tots', hasSizes: false, price: 8.99 },
+                { id: 'st-pretzel', name: 'Pretzel Bites', hasSizes: false, price: 8.99 },
+                { id: 'st-ziti', name: 'Baked Ziti', hasSizes: true, prices: { half: 11.99, full: 14.99 } }
+            ],
+            beverages: [
+                { id: 'bev-soda', name: 'Fountain Drink', price: 2.99 },
+                { id: 'bev-water', name: 'Bottled Water', price: 1.99 }
+            ]
+        };
+
+        // ===================================
+        // STATE MANAGEMENT
+        // ===================================
+        let cart = [];
+        let currentPage = 'home';
+
+        // ===================================
+        // LOGGING UTILITIES
+        // ===================================
+        const LOG_LEVEL = {
+            INFO: 'INFO',
+            WARNING: 'WARNING',
+            ERROR: 'ERROR'
+        };
+
+        function log(level, message, data = null) {
+            const timestamp = new Date().toISOString();
+            const logMessage = `[${timestamp}] [${level}] ${message}`;
+
+            if (level === LOG_LEVEL.ERROR) {
+                console.error(logMessage, data || '');
+            } else if (level === LOG_LEVEL.WARNING) {
+                console.warn(logMessage, data || '');
+            } else {
+                console.log(logMessage, data || '');
+            }
+        }
+
+        // ===================================
+        // NAVIGATION
+        // ===================================
+        function navigateTo(page) {
+            log(LOG_LEVEL.INFO, `Navigating to page: ${page}`);
+
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+
+            // Show target page
+            const targetPage = document.getElementById(page);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                currentPage = page;
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            } else {
+                log(LOG_LEVEL.ERROR, `Page not found: ${page}`);
+            }
+        }
+
+        // ===================================
+        // MENU RENDERING
+        // ===================================
+        function renderMenu() {
+            log(LOG_LEVEL.INFO, 'Rendering menu');
+            const menuContent = document.getElementById('menu-content');
+
+            let html = '';
+
+            // Build Your Own Section
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold mb-6 text-brick">Build Your Own Pizza</h3>
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="text-xl font-bold text-charcoal">Build Your Own</h4>
+                                <p class="text-gray-600">Create your perfect pizza with our fresh ingredients</p>
+                                <p class="text-sm text-gray-500 mt-2">Starting at $10.99 | Add toppings for $2.99 each</p>
+                            </div>
+                            <button onclick="openBYOModal()" class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition">
+                                Customize
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Specialty Pizzas
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold mb-6 text-brick">Specialty Pizzas</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+            `;
+
+            MENU_DATA.specialtyPizzas.forEach(pizza => {
+                html += `
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h4 class="text-xl font-bold text-charcoal mb-2">${pizza.name}</h4>
+                        <p class="text-gray-600 mb-3">${pizza.description}</p>
+                        <p class="text-sm text-gray-500 mb-4">Personal $${pizza.prices.personal} | Small $${pizza.prices.small} | Medium $${pizza.prices.medium} | Large $${pizza.prices.large}</p>
+                        <button onclick='openSpecialtyModal(${JSON.stringify(pizza)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+
+            // Starters
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold mb-6 text-brick">Starters</h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+            `;
+
+            MENU_DATA.starters.forEach(starter => {
+                html += `
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h4 class="text-xl font-bold text-charcoal mb-2">${starter.name}</h4>
+                        ${starter.hasSizes ?
+                            `<p class="text-sm text-gray-500 mb-4">1/2 Order $${starter.prices.half} | Full Order $${starter.prices.full}</p>` :
+                            `<p class="text-sm text-gray-500 mb-4">$${starter.price}</p>`
+                        }
+                        <button onclick='openStarterModal(${JSON.stringify(starter)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition w-full">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+
+            // Beverages
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold mb-6 text-brick">Beverages</h3>
+                    <div class="grid md:grid-cols-4 gap-6">
+            `;
+
+            MENU_DATA.beverages.forEach(bev => {
+                html += `
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h4 class="text-lg font-bold text-charcoal mb-2">${bev.name}</h4>
+                        <p class="text-sm text-gray-500 mb-4">$${bev.price}</p>
+                        <button onclick='addBeverageToCart(${JSON.stringify(bev)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition w-full">
+                            Add
+                        </button>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+
+            menuContent.innerHTML = html;
+        }
+
+        // ===================================
+        // MODAL FUNCTIONS
+        // ===================================
+        function openSpecialtyModal(pizza) {
+            log(LOG_LEVEL.INFO, `Opening specialty pizza modal: ${pizza.name}`);
+
+            const modal = document.getElementById('item-modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+
+            title.textContent = pizza.name;
+
+            body.innerHTML = `
+                <p class="text-gray-600 mb-6">${pizza.description}</p>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2">Select Size</label>
+                    <select id="specialty-size" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateSpecialtyPrice()">
+                        <option value="personal">Personal 10" - $${pizza.prices.personal}</option>
+                        <option value="small">Small 12" - $${pizza.prices.small}</option>
+                        <option value="medium">Medium 16" - $${pizza.prices.medium}</option>
+                        <option value="large">Large 18" - $${pizza.prices.large}</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-between mb-6 bg-cream/20 p-4 rounded-lg">
+                    <span class="text-xl font-bold">Price:</span>
+                    <span id="specialty-price" class="text-2xl font-bold text-brick">$${pizza.prices.personal}</span>
+                </div>
+
+                <button onclick='addSpecialtyToCart(${JSON.stringify(pizza)})' class="w-full bg-brick hover:bg-brick/80 text-white font-bold py-3 rounded-lg transition">
+                    Add to Cart
+                </button>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('fade-in');
+        }
+
+        function updateSpecialtyPrice() {
+            const sizeSelect = document.getElementById('specialty-size');
+            const priceDisplay = document.getElementById('specialty-price');
+            const size = sizeSelect.value;
+
+            // Extract price from selected option text
+            const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+            const priceText = selectedOption.text.split('$')[1];
+            const price = parseFloat(priceText);
+
+            priceDisplay.textContent = `$${price.toFixed(2)}`;
+        }
+
+        function addSpecialtyToCart(pizza) {
+            const size = document.getElementById('specialty-size').value;
+            const price = pizza.prices[size];
+
+            const cartItem = {
+                id: `${pizza.id}-${size}-${Date.now()}`,
+                name: pizza.name,
+                description: `${capitalizeFirst(size)} - ${pizza.description}`,
+                price: price,
+                quantity: 1,
+                type: 'specialty'
+            };
+
+            cart.push(cartItem);
+            log(LOG_LEVEL.INFO, 'Added specialty pizza to cart', cartItem);
+
+            updateCartDisplay();
+            closeItemModal();
+            showNotification('Added to cart!');
+        }
+
+        function openBYOModal() {
+            log(LOG_LEVEL.INFO, 'Opening Build Your Own modal');
+
+            const modal = document.getElementById('item-modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+
+            title.textContent = 'Build Your Own Pizza';
+
+            const byo = MENU_DATA.buildYourOwn;
+
+            body.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Size -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Select Size *</label>
+                        <select id="byo-size" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateBYOPrice()">
+                            <option value="personal">Personal 10" - $${byo.basePrices.personal}</option>
+                            <option value="small">Small 12" - $${byo.basePrices.small}</option>
+                            <option value="medium">Medium 16" - $${byo.basePrices.medium}</option>
+                            <option value="large">Large 18" - $${byo.basePrices.large}</option>
+                        </select>
+                    </div>
+
+                    <!-- Crust -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Select Crust *</label>
+                        <select id="byo-crust" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateBYOPrice()">
+                            <option value="regular">Regular (+$0.00)</option>
+                            <option value="cauliflower" disabled>Cauliflower (+$4.00) - 12" only</option>
+                            <option value="stuffed" disabled>Stuffed (+$4.00) - 12" only</option>
+                        </select>
+                    </div>
+
+                    <!-- Sauce -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Select Sauce *</label>
+                        <select id="byo-sauce" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                            ${byo.sauces.map(sauce => `<option value="${sauce}">${sauce}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <!-- Proteins -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Proteins ($2.99 each)</label>
+                        <div class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded-lg p-3">
+                            ${byo.proteins.map(protein => `
+                                <label class="flex items-center space-x-2">
+                                    <input type="checkbox" class="byo-topping" onchange="updateBYOPrice()" data-topping="${protein}">
+                                    <span class="text-sm">${protein}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Toppings -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Toppings ($2.99 each)</label>
+                        <div class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded-lg p-3">
+                            ${byo.toppings.map(topping => `
+                                <label class="flex items-center space-x-2">
+                                    <input type="checkbox" class="byo-topping" onchange="updateBYOPrice()" data-topping="${topping}">
+                                    <span class="text-sm">${topping}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Price Display -->
+                    <div class="flex items-center justify-between bg-cream/20 p-4 rounded-lg">
+                        <span class="text-xl font-bold">Total Price:</span>
+                        <span id="byo-price" class="text-2xl font-bold text-brick">$${byo.basePrices.personal.toFixed(2)}</span>
+                    </div>
+
+                    <button onclick="addBYOToCart()" class="w-full bg-brick hover:bg-brick/80 text-white font-bold py-3 rounded-lg transition">
+                        Add to Cart
+                    </button>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('fade-in');
+        }
+
+        function updateBYOPrice() {
+            const sizeSelect = document.getElementById('byo-size');
+            const crustSelect = document.getElementById('byo-crust');
+            const size = sizeSelect.value;
+
+            // Enable/disable crust options based on size
+            const cauliflowerOption = crustSelect.querySelector('option[value="cauliflower"]');
+            const stuffedOption = crustSelect.querySelector('option[value="stuffed"]');
+
+            if (size === 'small') {
+                cauliflowerOption.disabled = false;
+                stuffedOption.disabled = false;
+                cauliflowerOption.textContent = 'Cauliflower (+$4.00)';
+                stuffedOption.textContent = 'Stuffed (+$4.00)';
+            } else {
+                cauliflowerOption.disabled = true;
+                stuffedOption.disabled = true;
+                cauliflowerOption.textContent = 'Cauliflower (+$4.00) - 12" only';
+                stuffedOption.textContent = 'Stuffed (+$4.00) - 12" only';
+
+                // Reset to regular if invalid selection
+                if (crustSelect.value !== 'regular') {
+                    crustSelect.value = 'regular';
+                }
+            }
+
+            const byo = MENU_DATA.buildYourOwn;
+            let basePrice = byo.basePrices[size];
+
+            // Add crust price
+            const crust = crustSelect.value;
+            const crustMod = crust !== 'regular' ? 4.00 : 0;
+
+            // Count toppings
+            const toppings = document.querySelectorAll('.byo-topping:checked');
+            const toppingCount = toppings.length;
+            const toppingPrice = toppingCount * byo.toppingPrice;
+
+            const total = basePrice + crustMod + toppingPrice;
+
+            document.getElementById('byo-price').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function addBYOToCart() {
+            const size = document.getElementById('byo-size').value;
+            const crust = document.getElementById('byo-crust').value;
+            const sauce = document.getElementById('byo-sauce').value;
+            const toppings = Array.from(document.querySelectorAll('.byo-topping:checked')).map(cb => cb.dataset.topping);
+
+            const byo = MENU_DATA.buildYourOwn;
+            const basePrice = byo.basePrices[size];
+            const crustMod = crust !== 'regular' ? 4.00 : 0;
+            const toppingPrice = toppings.length * byo.toppingPrice;
+            const total = basePrice + crustMod + toppingPrice;
+
+            const description = `${capitalizeFirst(size)} ${capitalizeFirst(crust)} Crust, ${sauce}${toppings.length > 0 ? `, ${toppings.join(', ')}` : ''}`;
+
+            const cartItem = {
+                id: `byo-${Date.now()}`,
+                name: 'Build Your Own Pizza',
+                description: description,
+                price: total,
+                quantity: 1,
+                type: 'byo'
+            };
+
+            cart.push(cartItem);
+            log(LOG_LEVEL.INFO, 'Added BYO pizza to cart', cartItem);
+
+            updateCartDisplay();
+            closeItemModal();
+            showNotification('Pizza added to cart!');
+        }
+
+        function openStarterModal(starter) {
+            log(LOG_LEVEL.INFO, `Opening starter modal: ${starter.name}`);
+
+            if (!starter.hasSizes) {
+                // Add directly to cart
+                addStarterToCart(starter, null);
+                return;
+            }
+
+            const modal = document.getElementById('item-modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+
+            title.textContent = starter.name;
+
+            body.innerHTML = `
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2">Select Size</label>
+                    <select id="starter-size" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateStarterPrice()">
+                        <option value="half">1/2 Order - $${starter.prices.half}</option>
+                        <option value="full">Full Order - $${starter.prices.full}</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-between mb-6 bg-cream/20 p-4 rounded-lg">
+                    <span class="text-xl font-bold">Price:</span>
+                    <span id="starter-price" class="text-2xl font-bold text-brick">$${starter.prices.half}</span>
+                </div>
+
+                <button onclick='addStarterToCart(${JSON.stringify(starter)}, document.getElementById("starter-size").value)' class="w-full bg-brick hover:bg-brick/80 text-white font-bold py-3 rounded-lg transition">
+                    Add to Cart
+                </button>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('fade-in');
+        }
+
+        function updateStarterPrice() {
+            const sizeSelect = document.getElementById('starter-size');
+            const priceDisplay = document.getElementById('starter-price');
+
+            const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+            const priceText = selectedOption.text.split('$')[1];
+            const price = parseFloat(priceText);
+
+            priceDisplay.textContent = `$${price.toFixed(2)}`;
+        }
+
+        function addStarterToCart(starter, size) {
+            let price, description;
+
+            if (starter.hasSizes) {
+                price = starter.prices[size];
+                description = `${size === 'half' ? '1/2 Order' : 'Full Order'}`;
+            } else {
+                price = starter.price;
+                description = starter.name;
+            }
+
+            const cartItem = {
+                id: `${starter.id}-${size || 'single'}-${Date.now()}`,
+                name: starter.name,
+                description: description,
+                price: price,
+                quantity: 1,
+                type: 'starter'
+            };
+
+            cart.push(cartItem);
+            log(LOG_LEVEL.INFO, 'Added starter to cart', cartItem);
+
+            updateCartDisplay();
+            closeItemModal();
+            showNotification('Added to cart!');
+        }
+
+        function addBeverageToCart(beverage) {
+            const cartItem = {
+                id: `${beverage.id}-${Date.now()}`,
+                name: beverage.name,
+                description: beverage.name,
+                price: beverage.price,
+                quantity: 1,
+                type: 'beverage'
+            };
+
+            cart.push(cartItem);
+            log(LOG_LEVEL.INFO, 'Added beverage to cart', cartItem);
+
+            updateCartDisplay();
+            showNotification('Added to cart!');
+        }
+
+        function closeItemModal() {
+            document.getElementById('item-modal').classList.add('hidden');
+        }
+
+        // ===================================
+        // CART FUNCTIONS
+        // ===================================
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            modal.classList.toggle('hidden');
+
+            if (!modal.classList.contains('hidden')) {
+                renderCart();
+            }
+        }
+
+        function renderCart() {
+            const cartItems = document.getElementById('cart-items');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty</p>';
+                updateCartTotals();
+                return;
+            }
+
+            let html = '';
+            cart.forEach((item, index) => {
+                html += `
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-charcoal">${item.name}</h4>
+                            <p class="text-sm text-gray-600">${item.description}</p>
+                            <p class="text-sm font-bold text-brick">$${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="updateQuantity(${index}, -1)" class="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded flex items-center justify-center">-</button>
+                            <span class="font-bold">${item.quantity}</span>
+                            <button onclick="updateQuantity(${index}, 1)" class="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded flex items-center justify-center">+</button>
+                            <button onclick="removeFromCart(${index})" class="text-red-600 hover:text-red-800 ml-2">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartItems.innerHTML = html;
+            updateCartTotals();
+        }
+
+        function updateQuantity(index, delta) {
+            cart[index].quantity += delta;
+
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+
+            log(LOG_LEVEL.INFO, `Updated cart quantity at index ${index}`, cart);
+            renderCart();
+            updateCartDisplay();
+        }
+
+        function removeFromCart(index) {
+            log(LOG_LEVEL.INFO, `Removing item from cart at index ${index}`);
+            cart.splice(index, 1);
+            renderCart();
+            updateCartDisplay();
+        }
+
+        function updateCartTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.0725;
+            const total = subtotal + tax;
+
+            document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cart-tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function updateCartDisplay() {
+            const badge = document.getElementById('cart-badge');
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            if (itemCount > 0) {
+                badge.textContent = itemCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            log(LOG_LEVEL.INFO, 'Proceeding to checkout');
+            toggleCart();
+            navigateTo('checkout');
+            renderCheckout();
+        }
+
+        // ===================================
+        // CHECKOUT FUNCTIONS
+        // ===================================
+        function renderCheckout() {
+            const checkoutItems = document.getElementById('checkout-items');
+
+            let html = '';
+            cart.forEach(item => {
+                html += `
+                    <div class="flex justify-between text-gray-700">
+                        <span>${item.quantity}x ${item.name} - ${item.description}</span>
+                        <span class="font-bold">$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            checkoutItems.innerHTML = html;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.0725;
+            const total = subtotal + tax;
+
+            document.getElementById('checkout-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('checkout-tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        // ===================================
+        // FORM SUBMISSION
+        // ===================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkoutForm = document.getElementById('checkout-form');
+
+            checkoutForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                log(LOG_LEVEL.INFO, 'Processing order submission');
+
+                // Show loading state
+                document.getElementById('submit-btn-text').classList.add('hidden');
+                document.getElementById('submit-btn-loader').classList.remove('hidden');
+
+                // Collect customer info
+                const customerName = document.getElementById('customer-name').value;
+                const customerPhone = document.getElementById('customer-phone').value;
+                const customerEmail = document.getElementById('customer-email').value;
+
+                // Calculate totals
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const tax = subtotal * 0.0725;
+                const total = subtotal + tax;
+
+                // Build Square API-style payload
+                const orderPayload = {
+                    idempotency_key: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                    order: {
+                        location_id: "DEMO_LOCATION_520_MAIN_ST",
+                        reference_id: `BRICKS_${Date.now()}`,
+                        customer_id: customerEmail,
+                        line_items: cart.map(item => ({
+                            name: item.name,
+                            note: item.description,
+                            quantity: item.quantity.toString(),
+                            base_price_money: {
+                                amount: Math.round(item.price * 100), // Convert to cents
+                                currency: "USD"
+                            }
+                        })),
+                        taxes: [{
+                            name: "Sales Tax",
+                            percentage: "7.25",
+                            scope: "ORDER"
+                        }],
+                        metadata: {
+                            customer_name: customerName,
+                            customer_phone: customerPhone,
+                            customer_email: customerEmail,
+                            order_type: "online",
+                            restaurant: "Bricks Pizza & Pub"
+                        }
+                    }
+                };
+
+                // Simulate API call with timeout
+                setTimeout(() => {
+                    // Clear console and log payload
+                    console.clear();
+                    console.log("=".repeat(60));
+                    console.log("--- SIMULATED API REQUEST TO SQUARE ---");
+                    console.log("--- 'CreateOrder' Endpoint Payload ---");
+                    console.log("=".repeat(60));
+                    console.log(JSON.stringify(orderPayload, null, 2));
+                    console.log("=".repeat(60));
+                    console.log(`Order Total: $${total.toFixed(2)}`);
+                    console.log(`Customer: ${customerName} (${customerEmail})`);
+                    console.log(`Phone: ${customerPhone}`);
+                    console.log(`Items: ${cart.length} different items, ${cart.reduce((sum, item) => sum + item.quantity, 0)} total`);
+                    console.log("=".repeat(60));
+
+                    log(LOG_LEVEL.INFO, 'Order submitted successfully', {
+                        orderId: orderPayload.order.reference_id,
+                        total: total,
+                        itemCount: cart.length
+                    });
+
+                    // Reset form
+                    checkoutForm.reset();
+                    document.getElementById('submit-btn-text').classList.remove('hidden');
+                    document.getElementById('submit-btn-loader').classList.add('hidden');
+
+                    // Clear cart
+                    cart = [];
+                    updateCartDisplay();
+
+                    // Show confirmation
+                    showConfirmation();
+                }, 2000);
+            });
+        });
+
+        function showConfirmation() {
+            document.getElementById('confirmation-modal').classList.remove('hidden');
+        }
+
+        function closeConfirmation() {
+            document.getElementById('confirmation-modal').classList.add('hidden');
+            navigateTo('home');
+        }
+
+        // ===================================
+        // UTILITY FUNCTIONS
+        // ===================================
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function showNotification(message) {
+            // Simple notification - could be enhanced
+            log(LOG_LEVEL.INFO, `Notification: ${message}`);
+        }
+
+        // ===================================
+        // INITIALIZATION
+        // ===================================
+        document.addEventListener('DOMContentLoaded', function() {
+            log(LOG_LEVEL.INFO, 'Application initialized');
+            renderMenu();
+
+            // Handle hash navigation
+            window.addEventListener('hashchange', function() {
+                const hash = window.location.hash.slice(1) || 'home';
+                navigateTo(hash);
+            });
+
+            // Initial navigation based on hash
+            const initialHash = window.location.hash.slice(1) || 'home';
+            navigateTo(initialHash);
+        });
+    </script>
+</body>
+</html>
