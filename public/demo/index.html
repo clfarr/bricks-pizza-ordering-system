@@ -1,0 +1,2601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bricks Pizza & Pub - Interactive Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brick: '#B55A3C',
+                        charcoal: '#3B3426',
+                        cream: '#D4A574',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Accessibility - Screen Reader Only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        .focus\:not-sr-only:focus {
+            position: static;
+            width: auto;
+            height: auto;
+            padding: inherit;
+            margin: 0;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
+        }
+
+        /* Custom animations and styles */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 0.2s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Scroll animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Pulse animation for CTAs */
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Bounce animation */
+        .bounce {
+            animation: bounce 1s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Float animation */
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Rotate animation for loading */
+        .rotate {
+            animation: rotate 1s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Shimmer effect */
+        .shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Enhanced hover effects */
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Glow effect */
+        .glow {
+            box-shadow: 0 0 20px rgba(181, 90, 60, 0.5);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+        .glow:hover {
+            box-shadow: 0 0 30px rgba(181, 90, 60, 0.8);
+        }
+
+        /* Stagger animation delays */
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        /* Smooth transitions for all interactive elements */
+        button, a, .btn {
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile Navigation Styles */
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Hamburger Icon Animation */
+        .hamburger-line {
+            transition: all 0.3s ease;
+        }
+        .hamburger.open .line1 {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.open .line2 {
+            opacity: 0;
+        }
+        .hamburger.open .line3 {
+            transform: rotate(-45deg) translate(7px, -6px);
+        }
+
+        /* Better touch targets for mobile */
+        @media (max-width: 768px) {
+            button, a, .btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+
+        /* Mobile modal improvements */
+        @media (max-width: 640px) {
+            .modal-overlay > div {
+                margin: 0 !important;
+                max-height: 100vh !important;
+                height: 100vh;
+                border-radius: 0 !important;
+            }
+        }
+
+        /* Date picker styling */
+        input[type="date"], input[type="time"] {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        /* Group order participant pills */
+        .participant-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #B55A3C 0%, #D4A574 100%);
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Skip Navigation Link -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:bg-brick focus:text-white focus:px-4 focus:py-2">
+        Skip to main content
+    </a>
+
+    <!-- Header / Navigation -->
+    <header role="banner" class="bg-charcoal text-white sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <img src="src/assets/images/logo.jpg" alt="Bricks Pizza & Pub Logo" class="h-12 w-auto rounded">
+                    <h1 class="text-xl md:text-2xl font-bold text-cream hidden sm:block">Bricks Pizza & Pub</h1>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav role="navigation" aria-label="Main navigation" class="hidden md:flex space-x-6">
+                    <a href="#home" aria-label="Go to home page" class="hover:text-cream transition">Home</a>
+                    <a href="#menu" aria-label="Go to order online page" class="hover:text-cream transition">Order Online</a>
+                    <a href="#orders" aria-label="View my orders" class="hover:text-cream transition">My Orders</a>
+                    <a href="#contact" aria-label="Go to contact page" class="hover:text-cream transition">Contact</a>
+                </nav>
+
+                <!-- Mobile & Cart Buttons -->
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleCart()" aria-label="Open shopping cart" aria-describedby="cart-badge" class="relative bg-brick hover:bg-brick/80 px-4 py-2 rounded-lg transition">
+                        <span>Cart</span>
+                        <span id="cart-badge" aria-live="polite" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center hidden">0</span>
+                    </button>
+
+                    <!-- Hamburger Menu Button -->
+                    <button onclick="toggleMobileMenu()" aria-label="Toggle mobile menu" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden hamburger p-2" id="hamburger-btn">
+                        <div class="w-6 h-0.5 bg-white mb-1 hamburger-line line1"></div>
+                        <div class="w-6 h-0.5 bg-white mb-1 hamburger-line line2"></div>
+                        <div class="w-6 h-0.5 bg-white hamburger-line line3"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" role="dialog" aria-label="Mobile navigation menu" aria-hidden="true" class="mobile-menu fixed top-0 right-0 h-full w-64 bg-charcoal text-white z-50 shadow-2xl md:hidden">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-xl font-bold text-cream">Menu</h2>
+                <button onclick="toggleMobileMenu()" aria-label="Close mobile menu" class="text-white text-2xl">&times;</button>
+            </div>
+            <nav role="navigation" aria-label="Mobile navigation" class="space-y-4">
+                <a href="#home" onclick="navigateTo('home'); toggleMobileMenu();" aria-label="Go to home page" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Home</a>
+                <a href="#menu" onclick="navigateTo('menu'); toggleMobileMenu();" aria-label="Go to order online page" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Order Online</a>
+                <a href="#orders" onclick="navigateTo('orders'); toggleMobileMenu();" aria-label="View my orders" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">My Orders</a>
+                <a href="#contact" onclick="navigateTo('contact'); toggleMobileMenu();" aria-label="Go to contact page" class="block py-3 px-4 hover:bg-brick rounded-lg transition text-lg">Contact</a>
+            </nav>
+            <div class="mt-8 pt-8 border-t border-cream/20">
+                <p class="text-sm text-cream mb-2">Call us:</p>
+                <a href="tel:5304235281" class="text-lg font-bold hover:text-cream transition">(530) 423-5281</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" aria-hidden="true" class="hidden fixed inset-0 bg-black/50 z-40 md:hidden" onclick="toggleMobileMenu()"></div>
+
+    <!-- Main Content Container -->
+    <main id="main-content" role="main" aria-label="Main content">
+
+        <!-- HOME PAGE -->
+        <section id="home" class="page">
+            <!-- Hero Section -->
+            <div class="bg-gradient-to-r from-brick to-charcoal text-white py-12 md:py-20">
+                <div class="container mx-auto px-4 text-center">
+                    <img src="src/assets/images/logo.jpg" alt="Bricks Pizza & Pub" class="mx-auto mb-6 rounded-lg shadow-2xl w-48 sm:w-64 md:w-80 float">
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-cream fade-in-up">Welcome to Bricks Pizza & Pub</h2>
+                    <p class="text-lg sm:text-xl md:text-2xl mb-8 fade-in-up delay-100">Authentic brick oven pizza in Weaverville, CA</p>
+                    <button onclick="navigateTo('menu')" class="bg-white text-brick px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-lg sm:text-xl font-bold hover:bg-cream transition transform hover:scale-110 pulse glow fade-in-up delay-200">
+                        Order Online Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Featured Specials -->
+            <div class="container mx-auto px-4 py-12 md:py-16">
+                <h3 class="text-2xl sm:text-3xl font-bold text-center mb-8 md:mb-12 text-charcoal">Featured Specials</h3>
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+                    <!-- Lunch Special -->
+                    <div class="bg-white rounded-lg shadow-lg p-5 md:p-6 border-4 border-cream card-hover fade-in-up delay-100">
+                        <h4 class="text-xl md:text-2xl font-bold text-brick mb-2">Lunch Special</h4>
+                        <p class="text-gray-600 mb-4 text-sm md:text-base">Slice of Pizza + House Salad</p>
+                        <p class="text-3xl md:text-4xl font-bold text-charcoal">$13.99</p>
+                    </div>
+                    <!-- Student Special -->
+                    <div class="bg-white rounded-lg shadow-lg p-5 md:p-6 border-4 border-cream card-hover fade-in-up delay-200">
+                        <h4 class="text-xl md:text-2xl font-bold text-brick mb-2">Student Special</h4>
+                        <p class="text-gray-600 mb-4 text-sm md:text-base">Slice of Pizza + Fountain Drink</p>
+                        <p class="text-3xl md:text-4xl font-bold text-charcoal">$5.00</p>
+                    </div>
+                    <!-- Pizza by the Slice -->
+                    <div class="bg-white rounded-lg shadow-lg p-5 md:p-6 border-4 border-cream card-hover fade-in-up delay-300 sm:col-span-2 md:col-span-1">
+                        <h4 class="text-xl md:text-2xl font-bold text-brick mb-2">Pizza by the Slice</h4>
+                        <p class="text-gray-600 mb-4 text-sm md:text-base">Add extra flavor for $0.60</p>
+                        <p class="text-3xl md:text-4xl font-bold text-charcoal">$5.99</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="bg-charcoal text-white py-16">
+                <div class="container mx-auto px-4 max-w-3xl text-center">
+                    <h3 class="text-3xl font-bold mb-6 text-cream">About Us</h3>
+                    <p class="text-lg leading-relaxed">
+                        Established in 2025, Bricks Pizza & Pub brings authentic brick oven pizza to the heart of Weaverville, CA.
+                        We use only the finest ingredients and traditional techniques to create pizzas that keep our community coming back for more.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MENU / ORDER PAGE -->
+        <section id="menu" class="page hidden">
+            <div class="container mx-auto px-4 py-6 md:py-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 md:mb-8 text-charcoal">Order Online</h2>
+
+                <!-- Menu Categories -->
+                <div id="menu-content" class="space-y-8 md:space-y-12">
+                    <!-- Menu will be dynamically rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- CHECKOUT PAGE -->
+        <section id="checkout" class="page hidden">
+            <div class="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 md:mb-8 text-charcoal">Checkout</h2>
+
+                <!-- Order Summary -->
+                <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 mb-6 md:mb-8">
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Order Summary</h3>
+                    <div id="checkout-items" class="space-y-3 mb-4 text-sm md:text-base">
+                        <!-- Items will be rendered here -->
+                    </div>
+                    <div class="border-t pt-4 space-y-2">
+                        <div class="flex justify-between text-base md:text-lg">
+                            <span>Subtotal:</span>
+                            <span id="checkout-subtotal">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-base md:text-lg">
+                            <span>Tax (7.25%):</span>
+                            <span id="checkout-tax">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-xl md:text-2xl font-bold text-brick border-t pt-2">
+                            <span>Total:</span>
+                            <span id="checkout-total">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group Order Info -->
+                <div id="group-order-banner" role="region" aria-label="Group order information" class="hidden bg-gradient-to-r from-brick to-charcoal text-white rounded-lg shadow-lg p-4 md:p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold flex items-center gap-2">
+                                👥 Group Order
+                                <span id="group-order-role" aria-label="Your role in group order" class="text-sm bg-white/20 px-3 py-1 rounded-full"></span>
+                            </h3>
+                            <p class="text-sm text-cream mt-1">Share the link below for others to join</p>
+                        </div>
+                        <button type="button" onclick="leaveGroupOrder()" aria-label="Leave group order" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-sm font-bold transition">
+                            Leave Group
+                        </button>
+                    </div>
+                    <div class="bg-white/10 rounded-lg p-3 mb-4">
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="group-order-link" aria-label="Shareable group order link" readonly class="flex-1 bg-transparent border-none text-white placeholder-cream/50 text-sm" value="">
+                            <button type="button" onclick="copyGroupLink()" aria-label="Copy group order link to clipboard" class="bg-white text-brick px-4 py-2 rounded-lg text-sm font-bold hover:bg-cream transition">
+                                📋 Copy
+                            </button>
+                        </div>
+                    </div>
+                    <div id="group-participants" aria-live="polite" aria-label="Group order participants" class="flex flex-wrap gap-2">
+                        <!-- Participant pills will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Checkout Form -->
+                <form id="checkout-form" role="form" aria-label="Order checkout form" class="space-y-6 md:space-y-8">
+                    <!-- Step 1: Order Type & Time -->
+                    <fieldset class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+                        <legend class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 1: Order Details</legend>
+
+                        <!-- Order Type -->
+                        <div class="mb-6" role="radiogroup" aria-label="Order type selection">
+                            <label class="block text-sm font-bold mb-3">Order Type *</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <label class="relative cursor-pointer">
+                                    <input type="radio" name="order-type" value="pickup" checked aria-label="Pickup order - available now" class="peer sr-only" onchange="toggleOrderType()">
+                                    <div class="border-2 border-gray-300 rounded-lg p-4 text-center peer-checked:border-brick peer-checked:bg-brick/5 transition">
+                                        <span class="text-lg font-bold">🏪 Pickup</span>
+                                        <p class="text-xs text-gray-600 mt-1">Available Now</p>
+                                    </div>
+                                </label>
+                                <label class="relative cursor-not-allowed opacity-50">
+                                    <input type="radio" name="order-type" value="delivery" disabled aria-label="Delivery - coming soon, currently unavailable" class="peer sr-only">
+                                    <div class="border-2 border-gray-300 rounded-lg p-4 text-center">
+                                        <span class="text-lg font-bold">🚗 Delivery</span>
+                                        <p class="text-xs text-gray-600 mt-1">Coming Soon</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Order Timing -->
+                        <div role="radiogroup" aria-label="Order timing selection">
+                            <label class="block text-sm font-bold mb-3">When do you want this order?</label>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <label class="relative cursor-pointer">
+                                    <input type="radio" name="order-timing" value="asap" checked aria-label="ASAP order - ready in 20-30 minutes" class="peer sr-only" onchange="toggleOrderTiming()">
+                                    <div class="border-2 border-gray-300 rounded-lg p-3 text-center peer-checked:border-brick peer-checked:bg-brick/5 transition">
+                                        <span class="text-base font-bold">⚡ ASAP</span>
+                                    </div>
+                                </label>
+                                <label class="relative cursor-pointer">
+                                    <input type="radio" name="order-timing" value="scheduled" aria-label="Schedule order for a future date and time" class="peer sr-only" onchange="toggleOrderTiming()">
+                                    <div class="border-2 border-gray-300 rounded-lg p-3 text-center peer-checked:border-brick peer-checked:bg-brick/5 transition">
+                                        <span class="text-base font-bold">📅 Schedule</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <!-- ASAP Pickup Time -->
+                            <div id="asap-time-section">
+                                <label for="pickup-time" class="block text-sm font-bold mb-2">Pickup Time *</label>
+                                <select id="pickup-time" required aria-required="true" aria-describedby="asap-help-text" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                    <option value="">Select a time...</option>
+                                </select>
+                                <p id="asap-help-text" class="text-xs text-gray-500 mt-1">Orders typically ready in 20-30 minutes</p>
+                            </div>
+
+                            <!-- Scheduled Order -->
+                            <div id="scheduled-time-section" class="hidden">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="scheduled-date" class="block text-sm font-bold mb-2">Date *</label>
+                                        <input type="date" id="scheduled-date" aria-required="true" aria-describedby="scheduled-help-text" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                    </div>
+                                    <div>
+                                        <label for="scheduled-time" class="block text-sm font-bold mb-2">Time *</label>
+                                        <input type="time" id="scheduled-time" aria-required="true" aria-describedby="scheduled-help-text" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                    </div>
+                                </div>
+                                <p id="scheduled-help-text" class="text-xs text-gray-500 mt-1">Schedule your order up to 7 days in advance</p>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Step 2: Contact Info -->
+                    <fieldset class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+                        <legend class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-brick">Step 2: Contact Information</legend>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="customer-name" class="block text-sm font-bold mb-2">Name *</label>
+                                <input type="text" id="customer-name" required aria-required="true" aria-label="Your full name" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                            </div>
+                            <div>
+                                <label for="customer-phone" class="block text-sm font-bold mb-2">Phone *</label>
+                                <input type="tel" id="customer-phone" required aria-required="true" aria-label="Your phone number" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="customer-email" class="block text-sm font-bold mb-2">Email *</label>
+                                <input type="email" id="customer-email" required aria-required="true" aria-label="Your email address" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="special-instructions" class="block text-sm font-bold mb-2">Special Instructions (Optional)</label>
+                                <textarea id="special-instructions" rows="3" placeholder="Extra sauce, no olives, well done, etc..." aria-label="Special instructions for your order" aria-describedby="special-instructions-help" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base resize-none"></textarea>
+                                <p id="special-instructions-help" class="text-xs text-gray-500 mt-1">Let us know any special requests for your order</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="flex items-start space-x-3 cursor-pointer">
+                                    <input type="checkbox" id="sms-notifications" aria-label="Receive SMS notifications when order is ready" aria-describedby="sms-help-text" class="mt-1 w-4 h-4 text-brick border-gray-300 rounded focus:ring-2 focus:ring-brick">
+                                    <span class="text-sm" id="sms-help-text">
+                                        <span class="font-bold">Send me SMS updates</span>
+                                        <span class="block text-gray-600">Get a text when your order is ready for pickup</span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- Step 3: Payment Info (Mock) -->
+                    <div class="bg-white rounded-lg shadow-lg p-4 md:p-6">
+                        <div class="flex items-center justify-between mb-3 md:mb-4">
+                            <h3 class="text-xl md:text-2xl font-bold text-brick">Step 3: Payment</h3>
+                            <div id="group-payment-toggle" class="hidden">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" id="split-payment" onchange="toggleSplitPayment()" class="w-4 h-4 text-brick rounded">
+                                    <span class="text-sm font-bold">Split Bill</span>
+                                </label>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4 italic">This is a demo - no real payment processing</p>
+
+                        <!-- Split Payment Section -->
+                        <div id="split-payment-section" class="hidden mb-6 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                            <h4 class="font-bold text-blue-900 mb-3">Split Payment</h4>
+                            <div class="space-y-3" id="split-payment-breakdown">
+                                <!-- Split breakdown will be rendered here -->
+                            </div>
+                            <p class="text-xs text-blue-700 mt-3">Each participant will receive a separate payment link</p>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold mb-2">Card Number</label>
+                                <input type="text" placeholder="4111 1111 1111 1111" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">Expiry</label>
+                                    <input type="text" placeholder="MM/YY" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold mb-2">CVV</label>
+                                    <input type="text" placeholder="123" class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick text-base">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full bg-brick hover:bg-brick/80 text-white font-bold py-4 rounded-lg text-lg md:text-xl transition transform hover:scale-105 glow">
+                        <span id="submit-btn-text">Place Order</span>
+                        <span id="submit-btn-loader" class="hidden">Processing...</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- MY ORDERS PAGE -->
+        <section id="orders" class="page hidden">
+            <div class="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 md:mb-8 text-charcoal">My Orders</h2>
+
+                <div id="orders-content">
+                    <!-- Orders will be rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT PAGE -->
+        <section id="contact" class="page hidden">
+            <div class="container mx-auto px-4 py-8 md:py-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 md:mb-12 text-charcoal">Contact Us</h2>
+
+                <div class="grid md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
+                    <!-- Contact Info -->
+                    <div class="bg-white rounded-lg shadow-lg p-6 md:p-8 space-y-6">
+                        <div>
+                            <h3 class="text-lg md:text-xl font-bold text-brick mb-2">Location</h3>
+                            <p class="text-gray-700 text-sm md:text-base">Bricks Pizza & Pub</p>
+                            <p class="text-gray-700 text-sm md:text-base">520 Main Street</p>
+                            <p class="text-gray-700 text-sm md:text-base">Weaverville, CA</p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg md:text-xl font-bold text-brick mb-2">Phone</h3>
+                            <a href="tel:5304235281" class="text-gray-700 hover:text-brick transition text-sm md:text-base font-medium">(530) 423-5281</a>
+                        </div>
+                        <div>
+                            <h3 class="text-lg md:text-xl font-bold text-brick mb-2">Hours</h3>
+                            <p class="text-gray-700 text-sm md:text-base">Sunday: 11AM - 8PM</p>
+                            <p class="text-gray-700 text-sm md:text-base">Monday - Thursday: 11AM - 8PM</p>
+                            <p class="text-gray-700 text-sm md:text-base">Friday - Saturday: 11AM - 9PM</p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg md:text-xl font-bold text-brick mb-2">Follow Us</h3>
+                            <a href="https://www.facebook.com/profile.php?id=61579018107619" target="_blank" class="text-blue-600 hover:underline text-sm md:text-base">Facebook</a>
+                        </div>
+                    </div>
+
+                    <!-- Google Map -->
+                    <div class="rounded-lg shadow-lg h-64 md:h-96 overflow-hidden">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3065.2!2d-122.9366!3d40.7311!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x54d2f3e1e1e1e1e1%3A0x1e1e1e1e1e1e1e1e!2s520%20Main%20St%2C%20Weaverville%2C%20CA%2096093!5e0!3m2!1sen!2sus!4v1234567890123!5m2!1sen!2sus"
+                            width="100%"
+                            height="100%"
+                            style="border:0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            title="Bricks Pizza & Pub Location">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal text-white py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-cream font-bold mb-2">Bricks Pizza & Pub</p>
+            <p class="text-sm">520 Main Street, Weaverville, CA | (530) 423-5281</p>
+            <p class="text-sm mt-2">© 2025 Bricks Pizza & Pub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- MODALS -->
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" role="dialog" aria-modal="true" aria-labelledby="cart-modal-title" aria-hidden="true" class="hidden fixed inset-0 z-50 modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4" onclick="if(event.target === this) toggleCart()">
+            <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 id="cart-modal-title" class="text-2xl font-bold text-charcoal">Your Cart</h3>
+                        <button onclick="toggleCart()" aria-label="Close cart modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                    </div>
+
+                    <div id="cart-items" role="list" aria-label="Cart items" aria-live="polite" class="space-y-4 mb-6">
+                        <!-- Cart items will be rendered here -->
+                    </div>
+
+                    <div class="border-t pt-4 space-y-2 mb-6" role="region" aria-label="Order totals">
+                        <div class="flex justify-between text-lg">
+                            <span>Subtotal:</span>
+                            <span id="cart-subtotal" aria-label="Cart subtotal">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg">
+                            <span>Tax (7.25%):</span>
+                            <span id="cart-tax" aria-label="Tax amount">$0.00</span>
+                        </div>
+                        <div class="flex justify-between text-2xl font-bold text-brick">
+                            <span>Total:</span>
+                            <span id="cart-total" aria-label="Order total">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <div class="flex gap-4">
+                            <button onclick="toggleCart()" aria-label="Continue shopping and close cart" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 rounded-lg transition">
+                                Continue Shopping
+                            </button>
+                            <button onclick="proceedToCheckout()" aria-label="Proceed to checkout" class="flex-1 bg-brick hover:bg-brick/80 text-white font-bold py-3 rounded-lg transition glow">
+                                Checkout
+                            </button>
+                        </div>
+                        <button onclick="startGroupOrder()" aria-label="Start a group order for multiple people" class="w-full bg-gradient-to-r from-brick to-charcoal text-white font-bold py-3 rounded-lg transition hover:opacity-90">
+                            👥 Start Group Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Customization Modal -->
+    <div id="item-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true" class="hidden fixed inset-0 z-50 modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4" onclick="if(event.target === this) closeItemModal()">
+            <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto slide-in">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 id="modal-title" class="text-2xl font-bold text-charcoal">Customize Item</h3>
+                        <button onclick="closeItemModal()" aria-label="Close customization modal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                    </div>
+
+                    <div id="modal-body">
+                        <!-- Dynamic content will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div id="confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="confirmation-modal-title" aria-hidden="true" class="hidden fixed inset-0 z-50 modal-overlay">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-md w-full slide-in">
+                <div class="p-6 md:p-8 text-center">
+                    <div class="text-5xl md:text-6xl mb-4" role="img" aria-label="Success checkmark">✅</div>
+                    <h3 id="confirmation-modal-title" class="text-2xl md:text-3xl font-bold text-brick mb-4">Order Placed!</h3>
+                    <p class="text-gray-600 mb-4 text-sm md:text-base">Thank you for your order. We'll have it ready for pickup soon!</p>
+                    <p class="text-sm text-gray-500 mb-6">Check the browser console to see the Square API payload</p>
+                    <div class="flex flex-col gap-3">
+                        <button onclick="navigateTo('orders'); closeConfirmation();" aria-label="Track your order" class="bg-brick hover:bg-brick/80 text-white font-bold py-3 px-6 rounded-lg transition glow">
+                            Track My Order
+                        </button>
+                        <button onclick="closeConfirmation()" aria-label="Close and return to home" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg transition">
+                            Back to Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===================================
+        // MENU DATABASE
+        // ===================================
+        const MENU_DATA = {
+            specialtyPizzas: [
+                {
+                    id: 'sp-doubleplay',
+                    name: 'Double Play',
+                    description: 'Extreme pepperoni - wall to wall',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-grandslam',
+                    name: 'Grand Slam',
+                    description: 'Salami, sausage, bacon, pepperoni, and Canadian bacon with marinara sauce',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-fairway',
+                    name: 'Fairway',
+                    description: 'Olives, onions, tomatoes, mushrooms, and bell peppers with basil pesto sauce',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-buzzerbeater',
+                    name: 'Buzzer Beater',
+                    description: 'Pepperoni, salami, sausage, olives, onions and bell peppers with marinara sauce',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-touchdown',
+                    name: 'Touchdown',
+                    description: 'Chicken, bacon, artichoke hearts, onions, tomatoes, and garlic with creamy alfredo sauce',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-underdog',
+                    name: 'Underdog',
+                    description: 'Chicken, bacon, tomatoes and olives with BBQ sauce',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                },
+                {
+                    id: 'sp-halloffame',
+                    name: 'Hall of Fame',
+                    description: 'Ham, pineapple, bacon, onions, tomatoes, and Polynesian sauce topped with shredded parmesan cheese',
+                    category: 'specialty',
+                    prices: {
+                        personal: 17.99,
+                        small: 24.99,
+                        medium: 28.99,
+                        large: 32.99
+                    }
+                }
+            ],
+            buildYourOwn: {
+                id: 'byo',
+                name: 'Build Your Own Pizza',
+                description: 'Create your perfect pizza',
+                category: 'byo',
+                basePrices: {
+                    personal: 10.99,
+                    small: 13.99,
+                    medium: 16.99,
+                    large: 20.99
+                },
+                crustOptions: [
+                    { name: 'Regular', price: 0, sizes: ['personal', 'small', 'medium', 'large'] },
+                    { name: 'Cauliflower', price: 4.00, sizes: ['small'] },
+                    { name: 'Stuffed', price: 4.00, sizes: ['small'] }
+                ],
+                sauces: ['Marinara', 'Creamy Alfredo', 'BBQ', 'Basil Pesto', 'Polynesian'],
+                proteins: ['Pepperoni', 'Salami', 'Ham', 'Bacon', 'Sausage', 'Chicken', 'Canadian Bacon'],
+                toppings: ['Bell Peppers', 'Olives', 'Onions', 'Tomatoes', 'Garlic', 'Pineapple', 'Jalapeños', 'Artichoke Hearts', 'Spinach', 'Mushrooms'],
+                toppingPrice: 2.99
+            },
+            starters: [
+                { id: 'st-mozz', name: 'Mozzarella Sticks', hasSizes: true, prices: { half: 8.99, full: 12.99 } },
+                { id: 'st-fries', name: 'French Fries', hasSizes: false, price: 6.99 },
+                { id: 'st-garlic', name: 'Garlic Bites', hasSizes: false, price: 8.99 },
+                { id: 'st-pickles', name: 'Fried Pickles', hasSizes: false, price: 8.99 },
+                { id: 'st-strips', name: 'Chicken Stripes', hasSizes: false, price: 10.99 },
+                { id: 'st-cheesybread', name: 'Garlic Cheesy Bread', hasSizes: false, price: 8.99, note: 'Add toppings for extra $2.00' },
+                { id: 'st-mushrooms', name: 'Fried Mushrooms', hasSizes: false, price: 8.99 },
+                { id: 'st-loadedfries', name: 'Loaded Fries', hasSizes: false, price: 8.99 },
+                { id: 'st-wings', name: 'Chicken Wings', hasSizes: true, prices: { half: 8.99, full: 14.99 }, note: 'Buffalo, BBQ, Garlic Parmesan, Sweet Chili, or Naked | Bone-in or Boneless' }
+            ],
+            dippingSauces: {
+                price: 0.50,
+                note: 'All dipping sauces $0.50'
+            },
+            pizzaByTheSlice: {
+                id: 'slice',
+                name: 'Pizza by the Slice',
+                basePrice: 5.99,
+                extraFlavor: 0.60
+            },
+            lunchSpecial: {
+                id: 'lunch',
+                name: 'Lunch Special',
+                description: 'Slice of Pizza + House Salad',
+                price: 13.99
+            },
+            studentSpecial: {
+                id: 'student',
+                name: 'Student Special',
+                description: 'Slice of Pizza + Fountain Drink',
+                price: 5.00
+            },
+            beverages: [
+                { id: 'bev-coke', name: 'Coke', price: 3.99 },
+                { id: 'bev-drpepper', name: 'Dr Pepper', price: 3.99 },
+                { id: 'bev-sprite', name: 'Sprite', price: 3.99 },
+                { id: 'bev-dietcoke', name: 'Diet Coke', price: 3.99 },
+                { id: 'bev-lemonade', name: 'Lemonade', price: 3.99 },
+                { id: 'bev-tea', name: 'Tea', price: 2.99 },
+                { id: 'bev-redbull', name: 'Infused Red Bull', price: 4.99 }
+            ]
+        };
+
+        // ===================================
+        // STATE MANAGEMENT
+        // ===================================
+        let cart = [];
+        let currentPage = 'home';
+        let orders = JSON.parse(localStorage.getItem('bricksOrders') || '[]');
+        let favoriteOrders = JSON.parse(localStorage.getItem('bricksFavorites') || '[]');
+        let groupOrder = null; // Current group order session
+        let isGroupOrderHost = false;
+
+        // ===================================
+        // CONFIGURATION - TWILIO & EMAIL
+        // ===================================
+        const TWILIO_CONFIG = {
+            // In production, these would be environment variables
+            accountSid: 'YOUR_TWILIO_ACCOUNT_SID',
+            authToken: 'YOUR_TWILIO_AUTH_TOKEN',
+            fromNumber: '+15555551234', // Your Twilio number
+            enabled: false // Set to true when credentials are configured
+        };
+
+        const EMAIL_CONFIG = {
+            // In production, use SendGrid, AWS SES, or similar
+            apiKey: 'YOUR_EMAIL_API_KEY',
+            fromEmail: 'orders@brickspizza.com',
+            fromName: 'Bricks Pizza & Pub',
+            enabled: false // Set to true when configured
+        };
+
+        // ===================================
+        // LOGGING UTILITIES
+        // ===================================
+        const LOG_LEVEL = {
+            INFO: 'INFO',
+            WARNING: 'WARNING',
+            ERROR: 'ERROR'
+        };
+
+        function log(level, message, data = null) {
+            const timestamp = new Date().toISOString();
+            const logMessage = `[${timestamp}] [${level}] ${message}`;
+
+            if (level === LOG_LEVEL.ERROR) {
+                console.error(logMessage, data || '');
+            } else if (level === LOG_LEVEL.WARNING) {
+                console.warn(logMessage, data || '');
+            } else {
+                console.log(logMessage, data || '');
+            }
+        }
+
+        // ===================================
+        // NAVIGATION
+        // ===================================
+        function navigateTo(page) {
+            log(LOG_LEVEL.INFO, `Navigating to page: ${page}`);
+
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+
+            // Show target page
+            const targetPage = document.getElementById(page);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                currentPage = page;
+
+                // Render orders if navigating to orders page
+                if (page === 'orders') {
+                    renderOrders();
+                }
+
+                // Scroll to top
+                window.scrollTo(0, 0);
+            } else {
+                log(LOG_LEVEL.ERROR, `Page not found: ${page}`);
+            }
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            const hamburger = document.getElementById('hamburger-btn');
+
+            const isOpen = mobileMenu.classList.toggle('open');
+            overlay.classList.toggle('hidden');
+            hamburger.classList.toggle('open');
+
+            // Update ARIA attributes
+            hamburger.setAttribute('aria-expanded', isOpen);
+            mobileMenu.setAttribute('aria-hidden', !isOpen);
+            overlay.setAttribute('aria-hidden', !isOpen);
+
+            // Prevent body scroll when menu is open
+            if (isOpen) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        // ===================================
+        // ORDER MANAGEMENT
+        // ===================================
+        function generatePickupTimes() {
+            const select = document.getElementById('pickup-time');
+            select.innerHTML = '<option value="">Select a time...</option>'; // Clear existing
+            const now = new Date();
+            const times = [];
+
+            // Generate times starting 30 minutes from now
+            let startTime = new Date(now.getTime() + 30 * 60000);
+            startTime.setMinutes(Math.ceil(startTime.getMinutes() / 15) * 15); // Round to nearest 15 min
+
+            // Generate 20 time slots (5 hours worth)
+            for (let i = 0; i < 20; i++) {
+                const time = new Date(startTime.getTime() + i * 15 * 60000);
+                const hours = time.getHours();
+                const minutes = time.getMinutes().toString().padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const displayHours = hours % 12 || 12;
+                const timeString = `${displayHours}:${minutes} ${ampm}`;
+                const isoString = time.toISOString();
+
+                times.push({ display: timeString, value: isoString });
+            }
+
+            times.forEach(time => {
+                const option = document.createElement('option');
+                option.value = time.value;
+                option.textContent = time.display;
+                select.appendChild(option);
+            });
+        }
+
+        function toggleOrderType() {
+            // Currently only pickup is available
+            // This function is here for future delivery expansion
+        }
+
+        function toggleOrderTiming() {
+            const timing = document.querySelector('input[name="order-timing"]:checked').value;
+            const asapSection = document.getElementById('asap-time-section');
+            const scheduledSection = document.getElementById('scheduled-time-section');
+            const pickupTimeSelect = document.getElementById('pickup-time');
+
+            if (timing === 'asap') {
+                asapSection.classList.remove('hidden');
+                scheduledSection.classList.add('hidden');
+                pickupTimeSelect.required = true;
+                document.getElementById('scheduled-date').required = false;
+                document.getElementById('scheduled-time').required = false;
+            } else {
+                asapSection.classList.add('hidden');
+                scheduledSection.classList.remove('hidden');
+                pickupTimeSelect.required = false;
+                document.getElementById('scheduled-date').required = true;
+                document.getElementById('scheduled-time').required = true;
+
+                // Set min date to today
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('scheduled-date').setAttribute('min', today);
+
+                // Set max date to 7 days from now
+                const maxDate = new Date();
+                maxDate.setDate(maxDate.getDate() + 7);
+                document.getElementById('scheduled-date').setAttribute('max', maxDate.toISOString().split('T')[0]);
+            }
+        }
+
+        // ===================================
+        // GROUP ORDER FUNCTIONS
+        // ===================================
+        function startGroupOrder() {
+            const groupId = `group_${Date.now()}${Math.random().toString(36).substr(2, 5)}`;
+            const userName = prompt('Enter your name for this group order:');
+
+            if (!userName) return;
+
+            groupOrder = {
+                id: groupId,
+                host: userName,
+                participants: [
+                    { name: userName, items: [...cart], isHost: true }
+                ],
+                createdAt: Date.now()
+            };
+
+            isGroupOrderHost = true;
+            cart = []; // Clear host cart (it's now in group order)
+
+            // Show group order banner
+            const banner = document.getElementById('group-order-banner');
+            const role = document.getElementById('group-order-role');
+            const link = document.getElementById('group-order-link');
+
+            banner.classList.remove('hidden');
+            role.textContent = 'Host';
+            link.value = `${window.location.origin}${window.location.pathname}?group=${groupId}`;
+
+            renderGroupParticipants();
+            updateCartDisplay();
+            toggleCart();
+
+            log(LOG_LEVEL.INFO, 'Group order started', groupOrder);
+        }
+
+        function joinGroupOrder(groupId) {
+            const userName = prompt('Enter your name to join this group order:');
+            if (!userName) return;
+
+            // In production, this would sync with backend
+            // For demo, simulate joining
+            if (!groupOrder || groupOrder.id !== groupId) {
+                alert('Group order not found or expired');
+                return;
+            }
+
+            groupOrder.participants.push({
+                name: userName,
+                items: [],
+                isHost: false
+            });
+
+            const banner = document.getElementById('group-order-banner');
+            const role = document.getElementById('group-order-role');
+
+            banner.classList.remove('hidden');
+            role.textContent = 'Participant';
+
+            renderGroupParticipants();
+            log(LOG_LEVEL.INFO, 'Joined group order', { groupId, userName });
+        }
+
+        function leaveGroupOrder() {
+            if (confirm('Are you sure you want to leave this group order?')) {
+                groupOrder = null;
+                isGroupOrderHost = false;
+                document.getElementById('group-order-banner').classList.add('hidden');
+                cart = [];
+                updateCartDisplay();
+            }
+        }
+
+        function copyGroupLink() {
+            const link = document.getElementById('group-order-link');
+            link.select();
+            document.execCommand('copy');
+            alert('Group order link copied! Share it with your friends.');
+        }
+
+        function renderGroupParticipants() {
+            if (!groupOrder) return;
+
+            const container = document.getElementById('group-participants');
+            let html = '';
+
+            groupOrder.participants.forEach(participant => {
+                const itemCount = participant.items.length;
+                html += `
+                    <div class="participant-pill">
+                        ${participant.isHost ? '👑' : '👤'} ${participant.name}
+                        <span style="background: white; color: #B55A3C; padding: 2px 8px; border-radius: 999px; font-size: 11px;">
+                            ${itemCount} items
+                        </span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+
+            // Show split payment option if group order
+            const splitToggle = document.getElementById('group-payment-toggle');
+            if (splitToggle) {
+                splitToggle.classList.remove('hidden');
+            }
+        }
+
+        function toggleSplitPayment() {
+            const checked = document.getElementById('split-payment').checked;
+            const section = document.getElementById('split-payment-section');
+
+            if (checked && groupOrder) {
+                section.classList.remove('hidden');
+                calculateSplitPayment();
+            } else {
+                section.classList.add('hidden');
+            }
+        }
+
+        function calculateSplitPayment() {
+            if (!groupOrder) return;
+
+            const breakdown = document.getElementById('split-payment-breakdown');
+            const totalItems = groupOrder.participants.reduce((sum, p) => sum + p.items.length, 0);
+            const subtotal = groupOrder.participants.reduce((sum, p) =>
+                sum + p.items.reduce((s, item) => s + (item.price * item.quantity), 0), 0
+            );
+            const tax = subtotal * 0.0725;
+            const total = subtotal + tax;
+            const perPerson = total / groupOrder.participants.length;
+
+            let html = '';
+            groupOrder.participants.forEach(participant => {
+                html += `
+                    <div class="flex justify-between items-center p-2 bg-white rounded">
+                        <span class="font-bold">${participant.isHost ? '👑 ' : ''}${participant.name}</span>
+                        <span class="text-brick font-bold">$${perPerson.toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            breakdown.innerHTML = html;
+        }
+
+        function saveOrder(orderData) {
+            orders.unshift(orderData); // Add to beginning of array
+            localStorage.setItem('bricksOrders', JSON.stringify(orders));
+            log(LOG_LEVEL.INFO, 'Order saved to localStorage', orderData);
+        }
+
+        function calculateEstimatedReadyTime(items) {
+            // Base time: 15 minutes
+            let minutes = 15;
+
+            // Count item types
+            let pizzaCount = 0;
+            let starterCount = 0;
+
+            items.forEach(item => {
+                const quantity = item.quantity || 1;
+                if (item.type === 'specialty' || item.type === 'byo') {
+                    pizzaCount += quantity;
+                } else if (item.type === 'starter') {
+                    starterCount += quantity;
+                }
+            });
+
+            // Add time based on pizzas (5 min per pizza)
+            minutes += pizzaCount * 5;
+
+            // Add time for starters (2 min per starter)
+            minutes += starterCount * 2;
+
+            // Cap at 45 minutes
+            minutes = Math.min(minutes, 45);
+
+            return minutes;
+        }
+
+        function reorderFromHistory(orderIndex) {
+            const order = orders[orderIndex];
+            if (!order) return;
+
+            // Clear current cart
+            cart = [];
+
+            // Add all items from the order to cart
+            order.items.forEach(item => {
+                cart.push({...item});
+            });
+
+            updateCartDisplay();
+            log(LOG_LEVEL.INFO, 'Reordered from history', order);
+
+            // Navigate to menu and show cart
+            navigateTo('menu');
+            toggleCart();
+        }
+
+        function addToFavorites(orderIndex) {
+            const order = orders[orderIndex];
+            if (!order) return;
+
+            // Check if already favorited
+            const exists = favoriteOrders.find(fav => fav.id === order.id);
+            if (exists) {
+                alert('This order is already in your favorites!');
+                return;
+            }
+
+            favoriteOrders.push({...order});
+            localStorage.setItem('bricksFavorites', JSON.stringify(favoriteOrders));
+            log(LOG_LEVEL.INFO, 'Added to favorites', order);
+
+            // Re-render orders to show updated favorite status
+            renderOrders();
+        }
+
+        function removeFromFavorites(orderId) {
+            favoriteOrders = favoriteOrders.filter(fav => fav.id !== orderId);
+            localStorage.setItem('bricksFavorites', JSON.stringify(favoriteOrders));
+            renderOrders();
+        }
+
+        function isFavorite(orderId) {
+            return favoriteOrders.some(fav => fav.id === orderId);
+        }
+
+        // ===================================
+        // SMS & EMAIL INTEGRATION
+        // ===================================
+        async function sendTwilioSMS(to, message) {
+            if (!TWILIO_CONFIG.enabled) {
+                // Fallback to simulation
+                console.log("=".repeat(60));
+                console.log("--- SIMULATED SMS (Twilio not configured) ---");
+                console.log(`To: ${to}`);
+                console.log(`Message: ${message}`);
+                console.log("=".repeat(60));
+                return { success: true, simulated: true };
+            }
+
+            try {
+                // Real Twilio API call
+                const auth = btoa(`${TWILIO_CONFIG.accountSid}:${TWILIO_CONFIG.authToken}`);
+                const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_CONFIG.accountSid}/Messages.json`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Basic ${auth}`,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        To: to,
+                        From: TWILIO_CONFIG.fromNumber,
+                        Body: message
+                    })
+                });
+
+                const data = await response.json();
+                log(LOG_LEVEL.INFO, 'Twilio SMS sent successfully', data);
+                return { success: true, data };
+            } catch (error) {
+                log(LOG_LEVEL.ERROR, 'Twilio SMS failed', error);
+                return { success: false, error };
+            }
+        }
+
+        function generateEmailReceipt(orderData) {
+            const orderDate = new Date(orderData.timestamp);
+            const pickupDate = new Date(orderData.pickupTime);
+
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #B55A3C 0%, #3B3426 100%); color: white; padding: 30px; text-center; border-radius: 10px 10px 0 0; }
+        .logo { font-size: 28px; font-weight: bold; margin-bottom: 10px; }
+        .content { background: #fff; padding: 30px; border: 2px solid #D4A574; border-radius: 0 0 10px 10px; }
+        .order-id { background: #D4A574; color: #3B3426; padding: 15px; text-align: center; font-weight: bold; font-size: 24px; border-radius: 5px; margin-bottom: 20px; }
+        .detail-row { display: flex; justify-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .detail-label { font-weight: bold; color: #B55A3C; }
+        .items-table { width: 100%; margin: 20px 0; }
+        .items-table th { background: #B55A3C; color: white; padding: 10px; text-align: left; }
+        .items-table td { padding: 10px; border-bottom: 1px solid #eee; }
+        .total-row { background: #f9f9f9; font-weight: bold; font-size: 18px; }
+        .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #D4A574; color: #666; }
+        .pickup-info { background: #FFF3E0; border-left: 4px solid #B55A3C; padding: 15px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🍕 Bricks Pizza & Pub</div>
+            <p style="margin: 0;">Thank you for your order!</p>
+        </div>
+
+        <div class="content">
+            <div class="order-id">Order #${orderData.id}</div>
+
+            <div class="detail-row">
+                <span class="detail-label">Order Date:</span>
+                <span>${orderDate.toLocaleString()}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Customer:</span>
+                <span>${orderData.customer.name}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Phone:</span>
+                <span>${orderData.customer.phone}</span>
+            </div>
+
+            <div class="detail-row">
+                <span class="detail-label">Email:</span>
+                <span>${orderData.customer.email}</span>
+            </div>
+
+            ${orderData.isScheduled ? `
+            <div class="pickup-info">
+                <strong>📅 Scheduled Order</strong><br>
+                Pickup: ${pickupDate.toLocaleString()}<br>
+                <small>We'll start preparing your order 30 minutes before pickup time</small>
+            </div>
+            ` : `
+            <div class="pickup-info">
+                <strong>⚡ ASAP Order</strong><br>
+                Pickup Time: ${pickupDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}<br>
+                Estimated Ready: ${orderData.estimatedMinutes} minutes
+            </div>
+            `}
+
+            ${orderData.specialInstructions ? `
+            <div class="detail-row">
+                <span class="detail-label">Special Instructions:</span>
+                <span><em>"${orderData.specialInstructions}"</em></span>
+            </div>
+            ` : ''}
+
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th style="text-align: center;">Qty</th>
+                        <th style="text-align: right;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${orderData.items.map(item => `
+                        <tr>
+                            <td>
+                                <strong>${item.name}</strong><br>
+                                <small style="color: #666;">${item.description}</small>
+                            </td>
+                            <td style="text-align: center;">${item.quantity}</td>
+                            <td style="text-align: right;">$${(item.price * item.quantity).toFixed(2)}</td>
+                        </tr>
+                    `).join('')}
+                    <tr>
+                        <td colspan="2" style="text-align: right; padding-top: 20px;"><strong>Subtotal:</strong></td>
+                        <td style="text-align: right; padding-top: 20px;">$${orderData.subtotal.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: right;"><strong>Tax (7.25%):</strong></td>
+                        <td style="text-align: right;">$${orderData.tax.toFixed(2)}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="2" style="text-align: right; color: #B55A3C;">TOTAL:</td>
+                        <td style="text-align: right; color: #B55A3C;">$${orderData.total.toFixed(2)}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            ${orderData.groupOrder ? `
+            <div style="background: #E3F2FD; border-left: 4px solid #2196F3; padding: 15px; margin: 20px 0;">
+                <strong>👥 Group Order</strong><br>
+                ${orderData.groupOrder.participants.length} participants<br>
+                ${orderData.splitPayment ? `Split payment: $${(orderData.total / orderData.groupOrder.participants.length).toFixed(2)} per person` : 'Single payment'}
+            </div>
+            ` : ''}
+        </div>
+
+        <div class="footer">
+            <p><strong>Bricks Pizza & Pub</strong><br>
+            520 Main Street, Weaverville, CA<br>
+            (530) 423-5281</p>
+
+            <p style="margin-top: 20px;">
+                <strong>Hours:</strong><br>
+                Sun: 11AM-8PM | Mon-Thu: 11AM-8PM | Fri-Sat: 11AM-9PM
+            </p>
+
+            <p style="margin-top: 20px; font-size: 12px; color: #999;">
+                Questions? Call us or visit our Facebook page<br>
+                This is an automated receipt from Bricks Pizza ordering system
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+            `;
+        }
+
+        async function sendEmailReceipt(orderData) {
+            if (!EMAIL_CONFIG.enabled) {
+                // Log email HTML to console
+                console.log("=".repeat(60));
+                console.log("--- EMAIL RECEIPT (Email service not configured) ---");
+                console.log(`To: ${orderData.customer.email}`);
+                console.log(`Subject: Order Confirmation #${orderData.id} - Bricks Pizza`);
+                console.log("--- EMAIL HTML ---");
+                console.log(generateEmailReceipt(orderData));
+                console.log("=".repeat(60));
+                return { success: true, simulated: true };
+            }
+
+            // In production, integrate with SendGrid, AWS SES, etc.
+            try {
+                const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${EMAIL_CONFIG.apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        personalizations: [{
+                            to: [{ email: orderData.customer.email, name: orderData.customer.name }],
+                            subject: `Order Confirmation #${orderData.id} - Bricks Pizza & Pub`
+                        }],
+                        from: {
+                            email: EMAIL_CONFIG.fromEmail,
+                            name: EMAIL_CONFIG.fromName
+                        },
+                        content: [{
+                            type: 'text/html',
+                            value: generateEmailReceipt(orderData)
+                        }]
+                    })
+                });
+
+                log(LOG_LEVEL.INFO, 'Email receipt sent successfully');
+                return { success: true };
+            } catch (error) {
+                log(LOG_LEVEL.ERROR, 'Email send failed', error);
+                return { success: false, error };
+            }
+        }
+
+        function simulateSMSNotification(phone, orderStatus, orderId) {
+            const message = `🍕 Bricks Pizza: Your order #${orderId} is ${orderStatus}! Ready for pickup at 520 Main St, Weaverville.`;
+            sendTwilioSMS(phone, message);
+        }
+
+        function getOrderStatus(orderTime) {
+            const now = Date.now();
+            const orderDate = new Date(orderTime).getTime();
+            const elapsed = now - orderDate;
+
+            // Status progression based on time elapsed
+            if (elapsed < 5 * 60000) { // 0-5 minutes
+                return { status: 'received', text: 'Order Received', icon: '📝', color: 'blue' };
+            } else if (elapsed < 20 * 60000) { // 5-20 minutes
+                return { status: 'preparing', text: 'Being Prepared', icon: '👨‍🍳', color: 'yellow' };
+            } else { // 20+ minutes
+                return { status: 'ready', text: 'Ready for Pickup', icon: '✅', color: 'green' };
+            }
+        }
+
+        function renderOrders() {
+            const ordersContent = document.getElementById('orders-content');
+
+            if (orders.length === 0) {
+                ordersContent.innerHTML = `
+                    <div class="text-center py-12">
+                        <p class="text-gray-500 text-lg mb-4">No orders yet</p>
+                        <button onclick="navigateTo('menu')" class="bg-brick hover:bg-brick/80 text-white font-bold py-3 px-6 rounded-lg transition glow">
+                            Start Ordering
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="space-y-6">';
+
+            orders.forEach((order, index) => {
+                const status = getOrderStatus(order.timestamp);
+                const orderDate = new Date(order.timestamp);
+                const pickupDate = new Date(order.pickupTime);
+                const isFav = isFavorite(order.id);
+
+                html += `
+                    <div class="bg-white rounded-lg shadow-lg p-4 md:p-6 card-hover">
+                        <!-- Order Header -->
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-lg md:text-xl font-bold text-charcoal">Order #${order.id}</h3>
+                                    ${isFav ? '<span class="text-yellow-500 text-xl">⭐</span>' : ''}
+                                </div>
+                                <p class="text-sm text-gray-500">${orderDate.toLocaleString()}</p>
+                                ${order.estimatedMinutes ? `<p class="text-xs text-brick font-bold mt-1">⏱️ Est. ${order.estimatedMinutes} min</p>` : ''}
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-block px-3 py-1 rounded-full text-sm font-bold bg-${status.color}-100 text-${status.color}-700">
+                                    ${status.icon} ${status.text}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Order Details -->
+                        <div class="border-t border-b py-3 mb-3">
+                            <p class="text-sm font-bold text-brick mb-1">Pickup Time:</p>
+                            <p class="text-base">${pickupDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</p>
+                            ${order.specialInstructions ? `
+                                <p class="text-sm font-bold text-brick mb-1 mt-2">Special Instructions:</p>
+                                <p class="text-sm text-gray-600 italic">"${order.specialInstructions}"</p>
+                            ` : ''}
+                        </div>
+
+                        <!-- Order Items -->
+                        <div class="space-y-2 mb-3">
+                            ${order.items.map(item => `
+                                <div class="flex justify-between text-sm">
+                                    <span>${item.quantity}x ${item.name}</span>
+                                    <span class="font-bold">$${(item.price * item.quantity).toFixed(2)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Order Total -->
+                        <div class="border-t pt-3 mb-3">
+                            <div class="flex justify-between items-center">
+                                <span class="font-bold text-lg">Total:</span>
+                                <span class="font-bold text-xl text-brick">$${order.total.toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <!-- Status Progress Bar -->
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs mb-2">
+                                <span class="${status.status === 'received' || status.status === 'preparing' || status.status === 'ready' ? 'text-brick font-bold' : 'text-gray-400'}">Received</span>
+                                <span class="${status.status === 'preparing' || status.status === 'ready' ? 'text-brick font-bold' : 'text-gray-400'}">Preparing</span>
+                                <span class="${status.status === 'ready' ? 'text-brick font-bold' : 'text-gray-400'}">Ready</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-brick rounded-full h-2 transition-all duration-500" style="width: ${status.status === 'received' ? '33%' : status.status === 'preparing' ? '66%' : '100%'}"></div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <button onclick="reorderFromHistory(${index})" class="flex-1 bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition text-sm glow">
+                                🔄 Reorder
+                            </button>
+                            ${isFav ?
+                                `<button onclick="removeFromFavorites('${order.id}')" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg transition text-sm">
+                                    ⭐ Remove Favorite
+                                </button>` :
+                                `<button onclick="addToFavorites(${index})" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg transition text-sm">
+                                    ⭐ Add to Favorites
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += '</div>';
+            ordersContent.innerHTML = html;
+        }
+
+        // ===================================
+        // MENU RENDERING
+        // ===================================
+        function renderMenu() {
+            log(LOG_LEVEL.INFO, 'Rendering menu');
+            const menuContent = document.getElementById('menu-content');
+
+            let html = '';
+
+            // Specials Section
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold mb-6 text-brick">Daily Specials</h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream card-hover">
+                            <h4 class="text-xl font-bold text-charcoal mb-2">${MENU_DATA.lunchSpecial.name}</h4>
+                            <p class="text-gray-600 mb-3">${MENU_DATA.lunchSpecial.description}</p>
+                            <p class="text-2xl font-bold text-brick mb-4">$${MENU_DATA.lunchSpecial.price}</p>
+                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.lunchSpecial)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full glow">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream card-hover">
+                            <h4 class="text-xl font-bold text-charcoal mb-2">${MENU_DATA.studentSpecial.name}</h4>
+                            <p class="text-gray-600 mb-3">${MENU_DATA.studentSpecial.description}</p>
+                            <p class="text-2xl font-bold text-brick mb-4">$${MENU_DATA.studentSpecial.price}</p>
+                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.studentSpecial)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full glow">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream card-hover">
+                            <h4 class="text-xl font-bold text-charcoal mb-2">${MENU_DATA.pizzaByTheSlice.name}</h4>
+                            <p class="text-gray-600 mb-3">Add extra flavor for $${MENU_DATA.pizzaByTheSlice.extraFlavor}</p>
+                            <p class="text-2xl font-bold text-brick mb-4">$${MENU_DATA.pizzaByTheSlice.basePrice}</p>
+                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.pizzaByTheSlice)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full glow">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Build Your Own Section
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold mb-6 text-brick">Build Your Own Pizza</h3>
+                    <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="text-xl font-bold text-charcoal">Build Your Own</h4>
+                                <p class="text-gray-600">Create your perfect pizza with our fresh ingredients</p>
+                                <p class="text-sm text-gray-500 mt-2">Starting at $10.99 | Add toppings for $2.99 each</p>
+                            </div>
+                            <button onclick="openBYOModal()" class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition glow pulse">
+                                Customize
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Specialty Pizzas
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold mb-6 text-brick">Specialty Pizzas</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+            `;
+
+            MENU_DATA.specialtyPizzas.forEach(pizza => {
+                html += `
+                    <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
+                        <h4 class="text-xl font-bold text-charcoal mb-2">${pizza.name}</h4>
+                        <p class="text-gray-600 mb-3">${pizza.description}</p>
+                        <p class="text-sm text-gray-500 mb-4">Personal $${pizza.prices.personal} | Small $${pizza.prices.small} | Medium $${pizza.prices.medium} | Large $${pizza.prices.large}</p>
+                        <button onclick='openSpecialtyModal(${JSON.stringify(pizza)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full glow">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+
+            // Starters
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold mb-6 text-brick">Starters</h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+            `;
+
+            MENU_DATA.starters.forEach(starter => {
+                html += `
+                    <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
+                        <h4 class="text-xl font-bold text-charcoal mb-2">${starter.name}</h4>
+                        ${starter.hasSizes ?
+                            `<p class="text-sm text-gray-500 mb-2">1/2 Order $${starter.prices.half} | Full Order $${starter.prices.full}</p>` :
+                            `<p class="text-sm text-gray-500 mb-2">$${starter.price}</p>`
+                        }
+                        ${starter.note ? `<p class="text-xs text-gray-400 mb-4">${starter.note}</p>` : '<div class="mb-4"></div>'}
+                        <button onclick='openStarterModal(${JSON.stringify(starter).replace(/'/g, "\\'")})'  class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition w-full glow">
+                            Add to Cart
+                        </button>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+
+            // Beverages
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold mb-6 text-brick">Beverages</h3>
+                    <div class="grid md:grid-cols-4 gap-6">
+            `;
+
+            MENU_DATA.beverages.forEach(bev => {
+                html += `
+                    <div class="bg-white rounded-lg shadow-lg p-6 card-hover">
+                        <h4 class="text-lg font-bold text-charcoal mb-2">${bev.name}</h4>
+                        <p class="text-sm text-gray-500 mb-4">$${bev.price}</p>
+                        <button onclick='addBeverageToCart(${JSON.stringify(bev)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition w-full glow">
+                            Add
+                        </button>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+
+            menuContent.innerHTML = html;
+        }
+
+        // ===================================
+        // MODAL FUNCTIONS
+        // ===================================
+        function openSpecialtyModal(pizza) {
+            log(LOG_LEVEL.INFO, `Opening specialty pizza modal: ${pizza.name}`);
+
+            const modal = document.getElementById('item-modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+
+            title.textContent = pizza.name;
+
+            body.innerHTML = `
+                <p class="text-gray-600 mb-6">${pizza.description}</p>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2">Select Size *</label>
+                    <select id="specialty-size" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateSpecialtyPrice()">
+                        <option value="personal">Personal 10" - $${pizza.prices.personal}</option>
+                        <option value="small">Small 12" - $${pizza.prices.small}</option>
+                        <option value="medium">Medium 16" - $${pizza.prices.medium}</option>
+                        <option value="large">Large 18" - $${pizza.prices.large}</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2">Select Crust *</label>
+                    <select id="specialty-crust" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateSpecialtyPrice()">
+                        <option value="regular">Regular Crust (+$0.00)</option>
+                        <option value="cauliflower" disabled>Cauliflower Crust (+$4.00) - 12" only</option>
+                        <option value="stuffed" disabled>Stuffed Crust (+$4.00) - 12" only</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Cauliflower and Stuffed crusts available on 12" size only</p>
+                </div>
+
+                <div class="flex items-center justify-between mb-6 bg-cream/20 p-4 rounded-lg">
+                    <span class="text-xl font-bold">Price:</span>
+                    <span id="specialty-price" class="text-2xl font-bold text-brick">$${pizza.prices.personal}</span>
+                </div>
+
+                <button onclick='addSpecialtyToCart(${JSON.stringify(pizza)})' class="w-full bg-brick hover:bg-brick/80 text-white font-bold py-3 rounded-lg transition">
+                    Add to Cart
+                </button>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('fade-in');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+
+            // Focus on the first interactive element
+            setTimeout(() => {
+                const firstSelect = modal.querySelector('select');
+                if (firstSelect) firstSelect.focus();
+            }, 100);
+        }
+
+        function updateSpecialtyPrice() {
+            const sizeSelect = document.getElementById('specialty-size');
+            const crustSelect = document.getElementById('specialty-crust');
+            const priceDisplay = document.getElementById('specialty-price');
+            const size = sizeSelect.value;
+
+            // Enable/disable crust options based on size
+            const cauliflowerOption = crustSelect.querySelector('option[value="cauliflower"]');
+            const stuffedOption = crustSelect.querySelector('option[value="stuffed"]');
+
+            if (size === 'small') {
+                cauliflowerOption.disabled = false;
+                stuffedOption.disabled = false;
+                cauliflowerOption.textContent = 'Cauliflower Crust (+$4.00)';
+                stuffedOption.textContent = 'Stuffed Crust (+$4.00)';
+            } else {
+                cauliflowerOption.disabled = true;
+                stuffedOption.disabled = true;
+                cauliflowerOption.textContent = 'Cauliflower Crust (+$4.00) - 12" only';
+                stuffedOption.textContent = 'Stuffed Crust (+$4.00) - 12" only';
+
+                // Reset to regular if invalid selection
+                if (crustSelect.value !== 'regular') {
+                    crustSelect.value = 'regular';
+                }
+            }
+
+            // Extract base price from selected option text
+            const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+            const priceText = selectedOption.text.split('$')[1];
+            let price = parseFloat(priceText);
+
+            // Add crust upcharge
+            const crust = crustSelect.value;
+            if (crust !== 'regular') {
+                price += 4.00;
+            }
+
+            priceDisplay.textContent = `$${price.toFixed(2)}`;
+        }
+
+        function addSpecialtyToCart(pizza) {
+            const size = document.getElementById('specialty-size').value;
+            const crust = document.getElementById('specialty-crust').value;
+            let price = pizza.prices[size];
+
+            // Add crust upcharge
+            const crustMod = crust !== 'regular' ? 4.00 : 0;
+            price += crustMod;
+
+            // Build description with crust info
+            let description = `${capitalizeFirst(size)}`;
+            if (crust !== 'regular') {
+                description += `, ${capitalizeFirst(crust)} Crust`;
+            }
+            description += ` - ${pizza.description}`;
+
+            const cartItem = {
+                id: `${pizza.id}-${size}-${crust}-${Date.now()}`,
+                name: pizza.name,
+                description: description,
+                price: price,
+                quantity: 1,
+                type: 'specialty'
+            };
+
+            cart.push(cartItem);
+            log(LOG_LEVEL.INFO, 'Added specialty pizza to cart', cartItem);
+
+            updateCartDisplay();
+            closeItemModal();
+            showNotification('Added to cart!');
+        }
+
+        function openBYOModal() {
+            log(LOG_LEVEL.INFO, 'Opening Build Your Own modal');
+
+            const modal = document.getElementById('item-modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+
+            title.textContent = 'Build Your Own Pizza';
+
+            const byo = MENU_DATA.buildYourOwn;
+
+            body.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Size -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Select Size *</label>
+                        <select id="byo-size" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateBYOPrice()">
+                            <option value="personal">Personal 10" - $${byo.basePrices.personal}</option>
+                            <option value="small">Small 12" - $${byo.basePrices.small}</option>
+                            <option value="medium">Medium 16" - $${byo.basePrices.medium}</option>
+                            <option value="large">Large 18" - $${byo.basePrices.large}</option>
+                        </select>
+                    </div>
+
+                    <!-- Crust -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Select Crust *</label>
+                        <select id="byo-crust" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateBYOPrice()">
+                            <option value="regular">Regular (+$0.00)</option>
+                            <option value="cauliflower" disabled>Cauliflower (+$4.00) - 12" only</option>
+                            <option value="stuffed" disabled>Stuffed (+$4.00) - 12" only</option>
+                        </select>
+                    </div>
+
+                    <!-- Sauce -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Select Sauce *</label>
+                        <select id="byo-sauce" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick">
+                            ${byo.sauces.map(sauce => `<option value="${sauce}">${sauce}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <!-- Proteins -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Proteins ($2.99 each)</label>
+                        <div class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded-lg p-3">
+                            ${byo.proteins.map(protein => `
+                                <label class="flex items-center space-x-2">
+                                    <input type="checkbox" class="byo-topping" onchange="updateBYOPrice()" data-topping="${protein}">
+                                    <span class="text-sm">${protein}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Toppings -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2">Toppings ($2.99 each)</label>
+                        <div class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded-lg p-3">
+                            ${byo.toppings.map(topping => `
+                                <label class="flex items-center space-x-2">
+                                    <input type="checkbox" class="byo-topping" onchange="updateBYOPrice()" data-topping="${topping}">
+                                    <span class="text-sm">${topping}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Price Display -->
+                    <div class="flex items-center justify-between bg-cream/20 p-4 rounded-lg">
+                        <span class="text-xl font-bold">Total Price:</span>
+                        <span id="byo-price" class="text-2xl font-bold text-brick">$${byo.basePrices.personal.toFixed(2)}</span>
+                    </div>
+
+                    <button onclick="addBYOToCart()" class="w-full bg-brick hover:bg-brick/80 text-white font-bold py-3 rounded-lg transition">
+                        Add to Cart
+                    </button>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('fade-in');
+        }
+
+        function updateBYOPrice() {
+            const sizeSelect = document.getElementById('byo-size');
+            const crustSelect = document.getElementById('byo-crust');
+            const size = sizeSelect.value;
+
+            // Enable/disable crust options based on size
+            const cauliflowerOption = crustSelect.querySelector('option[value="cauliflower"]');
+            const stuffedOption = crustSelect.querySelector('option[value="stuffed"]');
+
+            if (size === 'small') {
+                cauliflowerOption.disabled = false;
+                stuffedOption.disabled = false;
+                cauliflowerOption.textContent = 'Cauliflower (+$4.00)';
+                stuffedOption.textContent = 'Stuffed (+$4.00)';
+            } else {
+                cauliflowerOption.disabled = true;
+                stuffedOption.disabled = true;
+                cauliflowerOption.textContent = 'Cauliflower (+$4.00) - 12" only';
+                stuffedOption.textContent = 'Stuffed (+$4.00) - 12" only';
+
+                // Reset to regular if invalid selection
+                if (crustSelect.value !== 'regular') {
+                    crustSelect.value = 'regular';
+                }
+            }
+
+            const byo = MENU_DATA.buildYourOwn;
+            let basePrice = byo.basePrices[size];
+
+            // Add crust price
+            const crust = crustSelect.value;
+            const crustMod = crust !== 'regular' ? 4.00 : 0;
+
+            // Count toppings
+            const toppings = document.querySelectorAll('.byo-topping:checked');
+            const toppingCount = toppings.length;
+            const toppingPrice = toppingCount * byo.toppingPrice;
+
+            const total = basePrice + crustMod + toppingPrice;
+
+            document.getElementById('byo-price').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function addBYOToCart() {
+            const size = document.getElementById('byo-size').value;
+            const crust = document.getElementById('byo-crust').value;
+            const sauce = document.getElementById('byo-sauce').value;
+            const toppings = Array.from(document.querySelectorAll('.byo-topping:checked')).map(cb => cb.dataset.topping);
+
+            const byo = MENU_DATA.buildYourOwn;
+            const basePrice = byo.basePrices[size];
+            const crustMod = crust !== 'regular' ? 4.00 : 0;
+            const toppingPrice = toppings.length * byo.toppingPrice;
+            const total = basePrice + crustMod + toppingPrice;
+
+            const description = `${capitalizeFirst(size)} ${capitalizeFirst(crust)} Crust, ${sauce}${toppings.length > 0 ? `, ${toppings.join(', ')}` : ''}`;
+
+            const cartItem = {
+                id: `byo-${Date.now()}`,
+                name: 'Build Your Own Pizza',
+                description: description,
+                price: total,
+                quantity: 1,
+                type: 'byo'
+            };
+
+            cart.push(cartItem);
+            log(LOG_LEVEL.INFO, 'Added BYO pizza to cart', cartItem);
+
+            updateCartDisplay();
+            closeItemModal();
+            showNotification('Pizza added to cart!');
+        }
+
+        function openStarterModal(starter) {
+            log(LOG_LEVEL.INFO, `Opening starter modal: ${starter.name}`);
+
+            if (!starter.hasSizes) {
+                // Add directly to cart
+                addStarterToCart(starter, null);
+                return;
+            }
+
+            const modal = document.getElementById('item-modal');
+            const title = document.getElementById('modal-title');
+            const body = document.getElementById('modal-body');
+
+            title.textContent = starter.name;
+
+            body.innerHTML = `
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2">Select Size</label>
+                    <select id="starter-size" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brick" onchange="updateStarterPrice()">
+                        <option value="half">1/2 Order - $${starter.prices.half}</option>
+                        <option value="full">Full Order - $${starter.prices.full}</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center justify-between mb-6 bg-cream/20 p-4 rounded-lg">
+                    <span class="text-xl font-bold">Price:</span>
+                    <span id="starter-price" class="text-2xl font-bold text-brick">$${starter.prices.half}</span>
+                </div>
+
+                <button onclick='addStarterToCart(${JSON.stringify(starter)}, document.getElementById("starter-size").value)' class="w-full bg-brick hover:bg-brick/80 text-white font-bold py-3 rounded-lg transition">
+                    Add to Cart
+                </button>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('fade-in');
+        }
+
+        function updateStarterPrice() {
+            const sizeSelect = document.getElementById('starter-size');
+            const priceDisplay = document.getElementById('starter-price');
+
+            const selectedOption = sizeSelect.options[sizeSelect.selectedIndex];
+            const priceText = selectedOption.text.split('$')[1];
+            const price = parseFloat(priceText);
+
+            priceDisplay.textContent = `$${price.toFixed(2)}`;
+        }
+
+        function addStarterToCart(starter, size) {
+            let price, description;
+
+            if (starter.hasSizes) {
+                price = starter.prices[size];
+                description = `${size === 'half' ? '1/2 Order' : 'Full Order'}`;
+            } else {
+                price = starter.price;
+                description = starter.name;
+            }
+
+            const cartItem = {
+                id: `${starter.id}-${size || 'single'}-${Date.now()}`,
+                name: starter.name,
+                description: description,
+                price: price,
+                quantity: 1,
+                type: 'starter'
+            };
+
+            cart.push(cartItem);
+            log(LOG_LEVEL.INFO, 'Added starter to cart', cartItem);
+
+            updateCartDisplay();
+            closeItemModal();
+            showNotification('Added to cart!');
+        }
+
+        function addBeverageToCart(beverage) {
+            const cartItem = {
+                id: `${beverage.id}-${Date.now()}`,
+                name: beverage.name,
+                description: beverage.name,
+                price: beverage.price,
+                quantity: 1,
+                type: 'beverage'
+            };
+
+            cart.push(cartItem);
+            log(LOG_LEVEL.INFO, 'Added beverage to cart', cartItem);
+
+            updateCartDisplay();
+            showNotification('Added to cart!');
+        }
+
+        function addSpecialToCart(special) {
+            const cartItem = {
+                id: `${special.id}-${Date.now()}`,
+                name: special.name,
+                description: special.description,
+                price: special.price || special.basePrice,
+                quantity: 1,
+                type: 'special'
+            };
+
+            cart.push(cartItem);
+            log(LOG_LEVEL.INFO, 'Added special to cart', cartItem);
+
+            updateCartDisplay();
+            showNotification('Added to cart!');
+        }
+
+        function closeItemModal() {
+            const modal = document.getElementById('item-modal');
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        // ===================================
+        // CART FUNCTIONS
+        // ===================================
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            const isHidden = modal.classList.toggle('hidden');
+            modal.setAttribute('aria-hidden', isHidden);
+
+            if (!isHidden) {
+                renderCart();
+                document.body.style.overflow = 'hidden';
+                // Focus on close button for accessibility
+                setTimeout(() => {
+                    const closeButton = modal.querySelector('button[aria-label="Close cart modal"]');
+                    if (closeButton) closeButton.focus();
+                }, 100);
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+
+        function renderCart() {
+            const cartItems = document.getElementById('cart-items');
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-gray-500 text-center py-8">Your cart is empty</p>';
+                updateCartTotals();
+                return;
+            }
+
+            let html = '';
+            cart.forEach((item, index) => {
+                html += `
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-charcoal">${item.name}</h4>
+                            <p class="text-sm text-gray-600">${item.description}</p>
+                            <p class="text-sm font-bold text-brick">$${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="updateQuantity(${index}, -1)" class="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded flex items-center justify-center">-</button>
+                            <span class="font-bold">${item.quantity}</span>
+                            <button onclick="updateQuantity(${index}, 1)" class="bg-gray-200 hover:bg-gray-300 w-8 h-8 rounded flex items-center justify-center">+</button>
+                            <button onclick="removeFromCart(${index})" class="text-red-600 hover:text-red-800 ml-2">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            cartItems.innerHTML = html;
+            updateCartTotals();
+        }
+
+        function updateQuantity(index, delta) {
+            cart[index].quantity += delta;
+
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+
+            log(LOG_LEVEL.INFO, `Updated cart quantity at index ${index}`, cart);
+            renderCart();
+            updateCartDisplay();
+        }
+
+        function removeFromCart(index) {
+            const itemName = cart[index].name;
+            log(LOG_LEVEL.INFO, `Removing item from cart at index ${index}`);
+            cart.splice(index, 1);
+            renderCart();
+            updateCartDisplay();
+            announceToScreenReader(`${itemName} removed from cart`);
+        }
+
+        function updateCartTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.0725;
+            const total = subtotal + tax;
+
+            document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cart-tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function updateCartDisplay() {
+            const badge = document.getElementById('cart-badge');
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            if (itemCount > 0) {
+                badge.textContent = itemCount;
+                badge.classList.remove('hidden');
+                badge.setAttribute('aria-label', `${itemCount} items in cart`);
+            } else {
+                badge.classList.add('hidden');
+                badge.setAttribute('aria-label', 'Cart is empty');
+            }
+        }
+
+        function proceedToCheckout() {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+
+            log(LOG_LEVEL.INFO, 'Proceeding to checkout');
+            toggleCart();
+            navigateTo('checkout');
+            renderCheckout();
+            generatePickupTimes(); // Generate pickup times when entering checkout
+        }
+
+        // ===================================
+        // CHECKOUT FUNCTIONS
+        // ===================================
+        function renderCheckout() {
+            const checkoutItems = document.getElementById('checkout-items');
+
+            let html = '';
+            cart.forEach(item => {
+                html += `
+                    <div class="flex justify-between text-gray-700">
+                        <span>${item.quantity}x ${item.name} - ${item.description}</span>
+                        <span class="font-bold">$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `;
+            });
+
+            checkoutItems.innerHTML = html;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.0725;
+            const total = subtotal + tax;
+
+            document.getElementById('checkout-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('checkout-tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        // ===================================
+        // FORM SUBMISSION
+        // ===================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkoutForm = document.getElementById('checkout-form');
+
+            checkoutForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                log(LOG_LEVEL.INFO, 'Processing order submission');
+
+                // Show loading state
+                document.getElementById('submit-btn-text').classList.add('hidden');
+                document.getElementById('submit-btn-loader').classList.remove('hidden');
+
+                // Collect customer info
+                const customerName = document.getElementById('customer-name').value;
+                const customerPhone = document.getElementById('customer-phone').value;
+                const customerEmail = document.getElementById('customer-email').value;
+                const orderType = document.querySelector('input[name="order-type"]:checked').value;
+                const orderTiming = document.querySelector('input[name="order-timing"]:checked').value;
+                const specialInstructions = document.getElementById('special-instructions').value.trim();
+                const smsNotifications = document.getElementById('sms-notifications').checked;
+
+                // Get pickup time based on timing type
+                let pickupTime;
+                let isScheduled = false;
+
+                if (orderTiming === 'asap') {
+                    pickupTime = document.getElementById('pickup-time').value;
+                    if (!pickupTime) {
+                        alert('Please select a pickup time');
+                        document.getElementById('submit-btn-text').classList.remove('hidden');
+                        document.getElementById('submit-btn-loader').classList.add('hidden');
+                        return;
+                    }
+                } else {
+                    // Scheduled order
+                    const scheduledDate = document.getElementById('scheduled-date').value;
+                    const scheduledTime = document.getElementById('scheduled-time').value;
+
+                    if (!scheduledDate || !scheduledTime) {
+                        alert('Please select both date and time for your scheduled order');
+                        document.getElementById('submit-btn-text').classList.remove('hidden');
+                        document.getElementById('submit-btn-loader').classList.add('hidden');
+                        return;
+                    }
+
+                    pickupTime = new Date(`${scheduledDate}T${scheduledTime}`).toISOString();
+                    isScheduled = true;
+                }
+
+                // Calculate totals
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const tax = subtotal * 0.0725;
+                const total = subtotal + tax;
+
+                // Calculate estimated ready time
+                const estimatedMinutes = calculateEstimatedReadyTime(cart);
+
+                // Create order ID
+                const orderId = `${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
+
+                // Build Square API-style payload
+                const orderPayload = {
+                    idempotency_key: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                    order: {
+                        location_id: "DEMO_LOCATION_520_MAIN_ST",
+                        reference_id: `BRICKS_${orderId}`,
+                        customer_id: customerEmail,
+                        line_items: cart.map(item => ({
+                            name: item.name,
+                            note: item.description,
+                            quantity: item.quantity.toString(),
+                            base_price_money: {
+                                amount: Math.round(item.price * 100), // Convert to cents
+                                currency: "USD"
+                            }
+                        })),
+                        taxes: [{
+                            name: "Sales Tax",
+                            percentage: "7.25",
+                            scope: "ORDER"
+                        }],
+                        metadata: {
+                            customer_name: customerName,
+                            customer_phone: customerPhone,
+                            customer_email: customerEmail,
+                            order_type: orderType,
+                            pickup_time: pickupTime,
+                            restaurant: "Bricks Pizza & Pub"
+                        }
+                    }
+                };
+
+                // Create order object for storage
+                const orderData = {
+                    id: orderId,
+                    timestamp: Date.now(),
+                    pickupTime: pickupTime,
+                    orderType: orderType,
+                    isScheduled: isScheduled,
+                    estimatedMinutes: estimatedMinutes,
+                    specialInstructions: specialInstructions || null,
+                    smsNotifications: smsNotifications,
+                    groupOrder: groupOrder ? {
+                        id: groupOrder.id,
+                        participants: groupOrder.participants,
+                        host: groupOrder.host
+                    } : null,
+                    splitPayment: groupOrder && document.getElementById('split-payment')?.checked,
+                    customer: {
+                        name: customerName,
+                        phone: customerPhone,
+                        email: customerEmail
+                    },
+                    items: groupOrder ? groupOrder.participants.flatMap(p => p.items) : cart.map(item => ({...item})),
+                    subtotal: subtotal,
+                    tax: tax,
+                    total: total
+                };
+
+                // Simulate API call with timeout
+                setTimeout(() => {
+                    // Clear console and log payload
+                    console.clear();
+                    console.log("=".repeat(60));
+                    console.log("--- SIMULATED API REQUEST TO SQUARE ---");
+                    console.log("--- 'CreateOrder' Endpoint Payload ---");
+                    console.log("=".repeat(60));
+                    console.log(JSON.stringify(orderPayload, null, 2));
+                    console.log("=".repeat(60));
+                    console.log(`Order Total: $${total.toFixed(2)}`);
+                    console.log(`Customer: ${customerName} (${customerEmail})`);
+                    console.log(`Phone: ${customerPhone}`);
+                    console.log(`Items: ${cart.length} different items, ${cart.reduce((sum, item) => sum + item.quantity, 0)} total`);
+                    console.log(`Estimated Time: ${estimatedMinutes} minutes`);
+                    if (specialInstructions) console.log(`Special Instructions: ${specialInstructions}`);
+                    if (smsNotifications) console.log(`SMS Notifications: ENABLED`);
+                    console.log("=".repeat(60));
+
+                    log(LOG_LEVEL.INFO, 'Order submitted successfully', {
+                        orderId: orderPayload.order.reference_id,
+                        total: total,
+                        itemCount: cart.length,
+                        estimatedMinutes: estimatedMinutes
+                    });
+
+                    // Save order to localStorage
+                    saveOrder(orderData);
+
+                    // Send email receipt
+                    sendEmailReceipt(orderData);
+
+                    // Simulate SMS notification if enabled
+                    if (smsNotifications) {
+                        // Send initial confirmation
+                        simulateSMSNotification(customerPhone, 'received', orderId);
+
+                        // For ASAP orders, schedule "ready" notification
+                        if (!isScheduled) {
+                            setTimeout(() => {
+                                simulateSMSNotification(customerPhone, 'ready for pickup', orderId);
+                            }, estimatedMinutes * 60 * 1000);
+                        }
+                        // For scheduled orders, notification would be sent when order is started
+                    }
+
+                    // Reset form
+                    checkoutForm.reset();
+                    document.querySelector('input[name="order-timing"][value="asap"]').checked = true;
+                    toggleOrderTiming();
+                    document.getElementById('submit-btn-text').classList.remove('hidden');
+                    document.getElementById('submit-btn-loader').classList.add('hidden');
+
+                    // Clear cart and group order
+                    cart = [];
+                    if (groupOrder) {
+                        document.getElementById('group-order-banner').classList.add('hidden');
+                        groupOrder = null;
+                        isGroupOrderHost = false;
+                    }
+                    updateCartDisplay();
+
+                    // Show confirmation
+                    showConfirmation();
+                }, 2000);
+            });
+        });
+
+        function showConfirmation() {
+            const modal = document.getElementById('confirmation-modal');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            announceToScreenReader('Order placed successfully!', 'assertive');
+
+            // Focus on the first button
+            setTimeout(() => {
+                const firstButton = modal.querySelector('button');
+                if (firstButton) firstButton.focus();
+            }, 100);
+        }
+
+        function closeConfirmation() {
+            const modal = document.getElementById('confirmation-modal');
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            navigateTo('home');
+        }
+
+        // ===================================
+        // UTILITY FUNCTIONS
+        // ===================================
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function showNotification(message) {
+            // Simple notification - could be enhanced
+            log(LOG_LEVEL.INFO, `Notification: ${message}`);
+            announceToScreenReader(message);
+        }
+
+        // Screen reader announcements
+        function announceToScreenReader(message, priority = 'polite') {
+            const announcement = document.getElementById('screen-reader-announcements');
+            if (!announcement) return;
+
+            announcement.setAttribute('aria-live', priority);
+            announcement.textContent = message;
+
+            // Clear after announcement
+            setTimeout(() => {
+                announcement.textContent = '';
+            }, 1000);
+        }
+
+        // ===================================
+        // INITIALIZATION
+        // ===================================
+        document.addEventListener('DOMContentLoaded', function() {
+            log(LOG_LEVEL.INFO, 'Application initialized');
+            renderMenu();
+
+            // Check for group order link in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const groupId = urlParams.get('group');
+            if (groupId) {
+                joinGroupOrder(groupId);
+            }
+
+            // Handle hash navigation
+            window.addEventListener('hashchange', function() {
+                const hash = window.location.hash.slice(1) || 'home';
+                navigateTo(hash);
+
+                // Render orders page when navigated to
+                if (hash === 'orders') {
+                    renderOrders();
+                }
+            });
+
+            // Initial navigation based on hash
+            const initialHash = window.location.hash.slice(1) || 'home';
+            navigateTo(initialHash);
+
+            // Render orders if starting on orders page
+            if (initialHash === 'orders') {
+                renderOrders();
+            }
+
+            // Keyboard accessibility - ESC key to close modals and mobile menu
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' || e.key === 'Esc') {
+                    // Close cart modal
+                    const cartModal = document.getElementById('cart-modal');
+                    if (cartModal && !cartModal.classList.contains('hidden')) {
+                        toggleCart();
+                        return;
+                    }
+
+                    // Close item modal
+                    const itemModal = document.getElementById('item-modal');
+                    if (itemModal && !itemModal.classList.contains('hidden')) {
+                        closeItemModal();
+                        return;
+                    }
+
+                    // Close mobile menu
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenu && mobileMenu.classList.contains('open')) {
+                        toggleMobileMenu();
+                        return;
+                    }
+                }
+            });
+
+            // Auto-refresh orders page every 30 seconds if on that page
+            setInterval(() => {
+                if (currentPage === 'orders') {
+                    renderOrders();
+                }
+            }, 30000);
+        });
+    </script>
+
+    <!-- Screen Reader Announcements (Visually Hidden) -->
+    <div id="screen-reader-announcements" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+</body>
+</html>
