@@ -80,7 +80,13 @@
             <!-- Featured Specials -->
             <div class="container mx-auto px-4 py-16">
                 <h3 class="text-3xl font-bold text-center mb-12 text-charcoal">Featured Specials</h3>
-                <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <!-- Lunch Special -->
+                    <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream">
+                        <h4 class="text-2xl font-bold text-brick mb-2">Lunch Special</h4>
+                        <p class="text-gray-600 mb-4">Slice of Pizza + House Salad</p>
+                        <p class="text-4xl font-bold text-charcoal">$13.99</p>
+                    </div>
                     <!-- Student Special -->
                     <div class="bg-white rounded-lg shadow-lg p-6 border-4 border-cream">
                         <h4 class="text-2xl font-bold text-brick mb-2">Student Special</h4>
@@ -334,9 +340,9 @@
         const MENU_DATA = {
             specialtyPizzas: [
                 {
-                    id: 'sp-pepperoni',
-                    name: 'Pepperoni',
-                    description: 'Pepperoni and cheese',
+                    id: 'sp-doubleplay',
+                    name: 'Double Play',
+                    description: 'Extreme pepperoni - wall to wall',
                     category: 'specialty',
                     prices: {
                         personal: 17.99,
@@ -348,7 +354,7 @@
                 {
                     id: 'sp-grandslam',
                     name: 'Grand Slam',
-                    description: 'Italian sausage, bacon, pepperoni, and Canadian bacon with marinara sauce',
+                    description: 'Salami, sausage, bacon, pepperoni, and Canadian bacon with marinara sauce',
                     category: 'specialty',
                     prices: {
                         personal: 17.99,
@@ -358,9 +364,9 @@
                     }
                 },
                 {
-                    id: 'sp-ashway',
-                    name: 'Ashway',
-                    description: 'Chicken, onions, jalapeños, cilantro, and bell peppers with basil pesto sauce',
+                    id: 'sp-fairway',
+                    name: 'Fairway',
+                    description: 'Olives, onions, tomatoes, mushrooms, and bell peppers with basil pesto sauce',
                     category: 'specialty',
                     prices: {
                         personal: 17.99,
@@ -370,9 +376,9 @@
                     }
                 },
                 {
-                    id: 'sp-popeye',
-                    name: 'Popeye',
-                    description: 'Chicken, spinach, mushrooms, onions, and bell peppers with white garlic sauce',
+                    id: 'sp-buzzerbeater',
+                    name: 'Buzzer Beater',
+                    description: 'Pepperoni, salami, sausage, olives, onions and bell peppers with marinara sauce',
                     category: 'specialty',
                     prices: {
                         personal: 17.99,
@@ -382,9 +388,9 @@
                     }
                 },
                 {
-                    id: 'sp-overload',
-                    name: 'Overload',
-                    description: 'Chicken, bacon, artichoke hearts, onions, tomatoes, and olives with creamy garlic sauce',
+                    id: 'sp-touchdown',
+                    name: 'Touchdown',
+                    description: 'Chicken, bacon, artichoke hearts, onions, tomatoes, and garlic with creamy alfredo sauce',
                     category: 'specialty',
                     prices: {
                         personal: 17.99,
@@ -394,9 +400,9 @@
                     }
                 },
                 {
-                    id: 'sp-delicious',
-                    name: 'Delicious',
-                    description: 'Pepperoni, bacon, tomatoes, and olives with BBQ sauce',
+                    id: 'sp-underdog',
+                    name: 'Underdog',
+                    description: 'Chicken, bacon, tomatoes and olives with BBQ sauce',
                     category: 'specialty',
                     prices: {
                         personal: 17.99,
@@ -406,9 +412,9 @@
                     }
                 },
                 {
-                    id: 'sp-aloha',
-                    name: 'Aloha',
-                    description: 'Ham, pineapple, bacon, onions, and tomatoes with Polynesian sauce, topped with parmesan cheese',
+                    id: 'sp-halloffame',
+                    name: 'Hall of Fame',
+                    description: 'Ham, pineapple, bacon, onions, tomatoes, and Polynesian sauce topped with shredded parmesan cheese',
                     category: 'specialty',
                     prices: {
                         personal: 17.99,
@@ -434,26 +440,52 @@
                     { name: 'Cauliflower', price: 4.00, sizes: ['small'] },
                     { name: 'Stuffed', price: 4.00, sizes: ['small'] }
                 ],
-                sauces: ['Creamy Alfredo', 'Alfredo BBQ', 'Basil Pesto'],
-                proteins: ['Italian Sausage', 'Salami', 'Pepperoni', 'Bacon', 'Ham', 'Canadian Bacon', 'Chicken'],
-                toppings: ['Black Olives', 'Green Olives', 'Tomatoes', 'Mushrooms', 'Bell Peppers', 'Spinach', 'Jalapeños', 'Pineapple', 'Onions', 'Artichoke Hearts', 'Cilantro'],
+                sauces: ['Marinara', 'Creamy Alfredo', 'BBQ', 'Basil Pesto', 'Polynesian'],
+                proteins: ['Pepperoni', 'Salami', 'Ham', 'Bacon', 'Sausage', 'Chicken', 'Canadian Bacon'],
+                toppings: ['Bell Peppers', 'Olives', 'Onions', 'Tomatoes', 'Garlic', 'Pineapple', 'Jalapeños', 'Artichoke Hearts', 'Spinach', 'Mushrooms'],
                 toppingPrice: 2.99
             },
             starters: [
                 { id: 'st-mozz', name: 'Mozzarella Sticks', hasSizes: true, prices: { half: 8.99, full: 12.99 } },
-                { id: 'st-wings', name: 'Chicken Wings', hasSizes: true, prices: { half: 8.99, full: 14.99 } },
-                { id: 'st-fries', name: 'Fries', hasSizes: false, price: 5.99 },
-                { id: 'st-pickles', name: 'Fried Pickles', hasSizes: false, price: 6.99 },
-                { id: 'st-garlic', name: 'Garlic Bites', hasSizes: false, price: 6.99 },
-                { id: 'st-salad', name: 'Salad', hasSizes: false, price: 6.99 },
-                { id: 'st-mushroom', name: 'Trio Mushroom', hasSizes: false, price: 8.99 },
-                { id: 'st-tots', name: 'Loaded Tots', hasSizes: false, price: 8.99 },
-                { id: 'st-pretzel', name: 'Pretzel Bites', hasSizes: false, price: 8.99 },
-                { id: 'st-ziti', name: 'Baked Ziti', hasSizes: true, prices: { half: 11.99, full: 14.99 } }
+                { id: 'st-fries', name: 'French Fries', hasSizes: false, price: 6.99 },
+                { id: 'st-garlic', name: 'Garlic Bites', hasSizes: false, price: 8.99 },
+                { id: 'st-pickles', name: 'Fried Pickles', hasSizes: false, price: 8.99 },
+                { id: 'st-strips', name: 'Chicken Stripes', hasSizes: false, price: 10.99 },
+                { id: 'st-cheesybread', name: 'Garlic Cheesy Bread', hasSizes: false, price: 8.99, note: 'Add toppings for extra $2.00' },
+                { id: 'st-mushrooms', name: 'Fried Mushrooms', hasSizes: false, price: 8.99 },
+                { id: 'st-loadedfries', name: 'Loaded Fries', hasSizes: false, price: 8.99 },
+                { id: 'st-wings', name: 'Chicken Wings', hasSizes: true, prices: { half: 8.99, full: 14.99 }, note: 'Buffalo, BBQ, Garlic Parmesan, Sweet Chili, or Naked | Bone-in or Boneless' }
             ],
+            dippingSauces: {
+                price: 0.50,
+                note: 'All dipping sauces $0.50'
+            },
+            pizzaByTheSlice: {
+                id: 'slice',
+                name: 'Pizza by the Slice',
+                basePrice: 5.99,
+                extraFlavor: 0.60
+            },
+            lunchSpecial: {
+                id: 'lunch',
+                name: 'Lunch Special',
+                description: 'Slice of Pizza + House Salad',
+                price: 13.99
+            },
+            studentSpecial: {
+                id: 'student',
+                name: 'Student Special',
+                description: 'Slice of Pizza + Fountain Drink',
+                price: 5.00
+            },
             beverages: [
-                { id: 'bev-soda', name: 'Fountain Drink', price: 2.99 },
-                { id: 'bev-water', name: 'Bottled Water', price: 1.99 }
+                { id: 'bev-coke', name: 'Coke', price: 3.99 },
+                { id: 'bev-drpepper', name: 'Dr Pepper', price: 3.99 },
+                { id: 'bev-sprite', name: 'Sprite', price: 3.99 },
+                { id: 'bev-dietcoke', name: 'Diet Coke', price: 3.99 },
+                { id: 'bev-lemonade', name: 'Lemonade', price: 3.99 },
+                { id: 'bev-tea', name: 'Tea', price: 2.99 },
+                { id: 'bev-redbull', name: 'Infused Red Bull', price: 4.99 }
             ]
         };
 
@@ -516,6 +548,39 @@
 
             let html = '';
 
+            // Specials Section
+            html += `
+                <div class="mb-12">
+                    <h3 class="text-3xl font-bold mb-6 text-brick">Daily Specials</h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream">
+                            <h4 class="text-xl font-bold text-charcoal mb-2">${MENU_DATA.lunchSpecial.name}</h4>
+                            <p class="text-gray-600 mb-3">${MENU_DATA.lunchSpecial.description}</p>
+                            <p class="text-2xl font-bold text-brick mb-4">$${MENU_DATA.lunchSpecial.price}</p>
+                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.lunchSpecial)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream">
+                            <h4 class="text-xl font-bold text-charcoal mb-2">${MENU_DATA.studentSpecial.name}</h4>
+                            <p class="text-gray-600 mb-3">${MENU_DATA.studentSpecial.description}</p>
+                            <p class="text-2xl font-bold text-brick mb-4">$${MENU_DATA.studentSpecial.price}</p>
+                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.studentSpecial)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg p-6 border-2 border-cream">
+                            <h4 class="text-xl font-bold text-charcoal mb-2">${MENU_DATA.pizzaByTheSlice.name}</h4>
+                            <p class="text-gray-600 mb-3">Add extra flavor for $${MENU_DATA.pizzaByTheSlice.extraFlavor}</p>
+                            <p class="text-2xl font-bold text-brick mb-4">$${MENU_DATA.pizzaByTheSlice.basePrice}</p>
+                            <button onclick='addSpecialToCart(${JSON.stringify(MENU_DATA.pizzaByTheSlice)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-6 rounded-lg transition w-full">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
             // Build Your Own Section
             html += `
                 <div class="mb-12">
@@ -569,10 +634,11 @@
                     <div class="bg-white rounded-lg shadow-lg p-6">
                         <h4 class="text-xl font-bold text-charcoal mb-2">${starter.name}</h4>
                         ${starter.hasSizes ?
-                            `<p class="text-sm text-gray-500 mb-4">1/2 Order $${starter.prices.half} | Full Order $${starter.prices.full}</p>` :
-                            `<p class="text-sm text-gray-500 mb-4">$${starter.price}</p>`
+                            `<p class="text-sm text-gray-500 mb-2">1/2 Order $${starter.prices.half} | Full Order $${starter.prices.full}</p>` :
+                            `<p class="text-sm text-gray-500 mb-2">$${starter.price}</p>`
                         }
-                        <button onclick='openStarterModal(${JSON.stringify(starter)})' class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition w-full">
+                        ${starter.note ? `<p class="text-xs text-gray-400 mb-4">${starter.note}</p>` : '<div class="mb-4"></div>'}
+                        <button onclick='openStarterModal(${JSON.stringify(starter).replace(/'/g, "\\'")})'  class="bg-brick hover:bg-brick/80 text-white font-bold py-2 px-4 rounded-lg transition w-full">
                             Add to Cart
                         </button>
                     </div>
@@ -925,6 +991,23 @@
 
             cart.push(cartItem);
             log(LOG_LEVEL.INFO, 'Added beverage to cart', cartItem);
+
+            updateCartDisplay();
+            showNotification('Added to cart!');
+        }
+
+        function addSpecialToCart(special) {
+            const cartItem = {
+                id: `${special.id}-${Date.now()}`,
+                name: special.name,
+                description: special.description,
+                price: special.price || special.basePrice,
+                quantity: 1,
+                type: 'special'
+            };
+
+            cart.push(cartItem);
+            log(LOG_LEVEL.INFO, 'Added special to cart', cartItem);
 
             updateCartDisplay();
             showNotification('Added to cart!');
