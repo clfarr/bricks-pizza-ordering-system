@@ -1,60 +1,152 @@
-# Bricks Pizza & Pub Website
+# 🍕 Bricks Pizza & Pub - Ordering System
 
-A modern, responsive website for Bricks Pizza & Pub, a local pizza restaurant in Weaverville, CA. Built with React, TypeScript, and deployed on Firebase Hosting.
+A modern, full-featured online ordering system built for **Bricks Pizza & Pub** in Weaverville, CA. Features group ordering, scheduled orders, real-time cart management, and comprehensive accessibility support.
 
-## Features
+[![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge)](https://bricks-pizza.web.app/demo/)
+[![GitHub](https://img.shields.io/badge/github-repository-blue?style=for-the-badge&logo=github)](https://github.com/clfarr/bricks-pizza-ordering-system)
 
-- **Online Ordering System** - Browse menu, customize pizzas, and place orders
-- **Menu Display** - Interactive menu with detailed pricing for all sizes
-- **Table Reservations** - Book tables for dine-in experiences
-- **Rewards Program** - Customer loyalty tracking with tier-based rewards
-- **Contact & Location** - Business hours, address, and contact information
-- **Responsive Design** - Optimized for mobile, tablet, and desktop
+## 🚀 Live Demo
 
-## Tech Stack
+- **Landing Page**: [https://bricks-pizza.web.app](https://bricks-pizza.web.app)
+- **Interactive Demo**: [https://bricks-pizza.web.app/demo/](https://bricks-pizza.web.app/demo/)
 
-- **Frontend**: React 19 with TypeScript
-- **Build Tool**: Vite
-- **Routing**: React Router DOM
-- **State Management**: React Context API
-- **Deployment**: Firebase Hosting (Google Cloud)
-- **Styling**: CSS3
+## ✨ Features
 
-## Project Structure
+### 🛒 **Core Ordering**
+- Complete menu system with specialty pizzas
+- Build-your-own pizza with live price calculation
+- Real-time shopping cart with quantity management
+- Order summary with tax calculation (7.25%)
+- Special instructions field
+
+### 👥 **Group Orders**
+- Create shareable group order sessions
+- Multiple people can add items to one order
+- Optional split payment (divide total evenly)
+- Real-time participant tracking
+- Host controls
+
+### 📅 **Scheduled Orders**
+- Schedule orders up to 7 days in advance
+- Date and time picker with validation
+- ASAP option with estimated ready time
+- Business hours awareness
+
+### 📧 **Notifications**
+- Email receipts with full order details
+- SMS notifications (Twilio integration ready)
+- Order status updates
+- Pickup time reminders
+
+### 💾 **Order Management**
+- Order history with detailed records
+- Save favorite items
+- One-click reorder
+- Order tracking with status updates
+- Estimated ready times
+
+### ♿ **Accessibility (WCAG 2.1 Compliant)**
+- Skip navigation links
+- Full keyboard navigation
+- ESC key closes modals/menus
+- ARIA labels and landmarks
+- Screen reader announcements
+- Focus management
+- Semantic HTML structure
+
+### 📱 **Responsive Design**
+- Mobile-first approach
+- Hamburger menu for mobile
+- Touch-friendly interface
+- Optimized for all screen sizes
+
+## 🛠️ Tech Stack
+
+### Frontend
+- **React 19** with **TypeScript**
+- **Vite** for fast development
+- **Tailwind CSS** via CDN
+- React Router DOM for navigation
+- Context API for state management
+
+### Backend/Services
+- **Firebase Hosting** (Google Cloud)
+- **Square API** (payment processing ready)
+- **Twilio** (SMS integration ready)
+- **SendGrid/AWS SES** (email ready)
+
+### Development Tools
+- ESLint for code quality
+- TypeScript for type safety
+- Git for version control
+
+## 📂 Project Structure
 
 ```
-src/
-├── components/       # Reusable UI components
-├── pages/           # Page-level route components
-├── context/         # React Context providers (Cart, etc.)
-├── data/            # Business info, menu items, pricing
-├── types/           # TypeScript type definitions
-├── services/        # API service layer
-└── assets/          # Images and icons
+bricks-pizza-ordering-system/
+├── src/
+│   ├── components/       # Reusable UI components
+│   ├── pages/           # Route-level components
+│   ├── context/         # React Context providers
+│   ├── data/            # Menu items, business info
+│   ├── types/           # TypeScript definitions
+│   ├── services/        # API integration layer
+│   └── assets/          # Images and static files
+├── public/
+│   ├── index.html       # Landing page
+│   └── demo/            # HTML demo application
+├── bricks_pizza_demo.html  # Standalone demo
+├── DEPLOYMENT_GUIDE.md      # Complete deployment instructions
+└── firebase.json            # Firebase configuration
 ```
 
-## Getting Started
+## 🎯 Business Information
+
+**Bricks Pizza & Pub**
+- 📍 520 Main Street, Weaverville, CA
+- ☎️ (530) 423-5281
+- 🌐 [Facebook](https://www.facebook.com/profile.php?id=61579018107619)
+
+**Hours:**
+- Sunday: 11am - 8pm
+- Monday - Thursday: 11am - 8pm
+- Friday & Saturday: 11am - 9pm
+
+## 💰 Pricing
+
+### Specialty Pizzas
+- Personal 10": $17.99
+- Small 12": $24.99
+- Medium 16": $28.99
+- Large 18": $32.99
+
+### Build Your Own
+- Personal 10": $10.99 (+ $2.99 per topping)
+- Small 12": $13.99 (+ $2.99 per topping)
+- Medium 16": $16.99 (+ $2.99 per topping)
+- Large 18": $20.99 (+ $2.99 per topping)
+
+**Specialty Crusts** (12" only): +$4.00
+- Cauliflower Crust
+- Stuffed Crust
+
+## 🚀 Getting Started
 
 ### Prerequisites
-
-- Node.js (v18 or higher)
+- Node.js v18+
 - npm or yarn
 
 ### Installation
 
-1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd "Bricks Pizza"
-```
+# Clone the repository
+git clone https://github.com/clfarr/bricks-pizza-ordering-system.git
+cd bricks-pizza-ordering-system
 
-2. Install dependencies:
-```bash
+# Install dependencies
 npm install
-```
 
-3. Start the development server:
-```bash
+# Start development server
 npm run dev
 ```
 
@@ -64,76 +156,152 @@ The site will be available at `http://localhost:5173`
 
 ```bash
 npm run build
-```
-
-### Preview Production Build
-
-```bash
 npm run preview
 ```
 
-## Deployment
+## 🌐 Deployment
 
-This project is configured for Firebase Hosting:
+This project is configured for Firebase Hosting. See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete instructions.
 
-1. Install Firebase CLI:
+### Quick Deploy
+
 ```bash
+# Install Firebase CLI
 npm install -g firebase-tools
-```
 
-2. Login to Firebase:
-```bash
+# Login
 firebase login
+
+# Deploy
+firebase deploy --only hosting
 ```
 
-3. Build and deploy:
-```bash
-npm run build
-firebase deploy
+## 🔧 Configuration
+
+### Square API Integration
+Update `SQUARE_CONFIG` in the demo file:
+```javascript
+const SQUARE_CONFIG = {
+  locationId: 'YOUR_SQUARE_LOCATION_ID',
+  enabled: true
+};
 ```
 
-## Menu Pricing
+### Twilio SMS
+Update `TWILIO_CONFIG`:
+```javascript
+const TWILIO_CONFIG = {
+  accountSid: 'YOUR_TWILIO_ACCOUNT_SID',
+  authToken: 'YOUR_TWILIO_AUTH_TOKEN',
+  fromNumber: '+15555551234',
+  enabled: true
+};
+```
 
-**Specialty Pizzas:**
-- Personal 10": $17.99
-- Small 12": $24.99
-- Medium 16": $28.99
-- Large 18": $32.99
+### Email Receipts
+Update `EMAIL_CONFIG`:
+```javascript
+const EMAIL_CONFIG = {
+  apiKey: 'YOUR_SENDGRID_API_KEY',
+  fromEmail: 'orders@brickspizza.com',
+  fromName: 'Bricks Pizza & Pub',
+  enabled: true
+};
+```
 
-**Build Your Own:**
-- Personal 10": $10.99 (+$2.99 per topping)
-- Small 12": $13.99 (+$2.99 per topping)
-- Medium 16": $16.99 (+$2.99 per topping)
-- Large 18": $20.99 (+$2.99 per topping)
+## 📊 Demo Features
 
-**Cauliflower Crust** (12" only): Additional $4.00
+The demo includes realistic data and full functionality:
+- ✅ 7 specialty pizzas
+- ✅ Build-your-own with 4 sizes, 3 crusts, 2 sauces, 14 toppings
+- ✅ 10 starters/appetizers
+- ✅ Beverages
+- ✅ Full cart management
+- ✅ Order tracking
+- ✅ localStorage persistence
 
-## Business Information
+**Note:** Payment processing is simulated. Square API integration will be activated upon client approval.
 
-**Bricks Pizza & Pub**
-520 Main Street
-Weaverville, CA
-Phone: 530-423-5281
+## 🧪 Testing Checklist
 
-**Hours:**
-- Sunday: 11am - 8pm
-- Monday-Thursday: 11am - 8pm
-- Friday & Saturday: 11am - 9pm
+- [x] Browse specialty pizzas
+- [x] Build custom pizza with various toppings
+- [x] Test crust validation (cauliflower/stuffed only on 12")
+- [x] Add starters and beverages to cart
+- [x] Adjust quantities in cart
+- [x] Remove items from cart
+- [x] Start group order and share link
+- [x] Schedule order for future date
+- [x] Complete checkout flow
+- [x] View order history
+- [x] Add items to favorites
+- [x] Reorder from history
+- [x] Test keyboard navigation
+- [x] Test screen reader compatibility
+- [x] Test mobile responsiveness
 
-## Future Enhancements
+## 🎨 Design System
 
-- Backend API for order processing
-- Payment integration (Stripe/Square)
-- Real-time order tracking
-- Customer authentication
-- Email/SMS notifications
-- Google Maps integration
-- Photo gallery
+### Colors (from Bricks Pizza logo)
+- **Brick Red**: `#B55A3C`
+- **Charcoal**: `#3B3426`
+- **Cream/Gold**: `#D4A574`
 
-## License
+### Typography
+- System font stack for optimal performance
+- Tailwind CSS utility classes
 
-This project is developed for Bricks Pizza & Pub.
+## 📈 Future Enhancements
 
-## Contact
+After client approval, planned features include:
 
-For questions or support, contact: 530-423-5281
+1. **Backend API**
+   - Node.js/Express server
+   - Firestore database
+   - Real-time order updates
+
+2. **Admin Dashboard**
+   - Order management interface
+   - Menu editing
+   - Analytics and reporting
+
+3. **Customer Accounts**
+   - User authentication
+   - Saved addresses
+   - Order history sync
+
+4. **Payment Processing**
+   - Live Square integration
+   - Credit card processing
+   - Digital receipts
+
+5. **Delivery**
+   - Delivery radius calculation
+   - Driver dispatch
+   - Real-time tracking
+
+6. **Marketing**
+   - Email campaigns
+   - Promotional codes
+   - Loyalty program
+
+## 📄 License
+
+This project is developed for **Bricks Pizza & Pub**.
+
+## 👤 Author
+
+**Caroline Farr**
+- Portfolio: [carriefarr.com](https://carriefarr.com)
+- GitHub: [@clfarr](https://github.com/clfarr)
+
+## 🙏 Acknowledgments
+
+- Built with [React](https://react.dev/)
+- Styled with [Tailwind CSS](https://tailwindcss.com/)
+- Hosted on [Firebase](https://firebase.google.com/)
+- Icons from emoji unicode
+
+---
+
+**🍕 Made with ❤️ for Bricks Pizza & Pub**
